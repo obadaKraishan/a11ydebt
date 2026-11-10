@@ -71,6 +71,11 @@ The first version, prepared but not yet tagged or published. See `docs/release-c
   - Docs: `docs/data-card.md`, `docs/how-to-audit.md` (a two-page handout),
     `docs/release-checklist.md`, and `docs/assets/qr-a11ydebt.png` (made with segno through uvx).
   - `report.md` ends with a footnote on independent seeds (decision D1).
+- Release:
+  - `.github/workflows/publish.yml` uploads to PyPI through trusted publishing (no token) when a
+    GitHub release is published. The upload waits for the maintainer's approval in the `pypi`
+    environment, the build checks that the tag matches the package version, and every action is
+    pinned to a full commit SHA.
 
 ### Fixed
 - `CorpusCoverage.n_apps` no longer counts screens without an identified app as an app.
@@ -87,3 +92,9 @@ The first version, prepared but not yet tagged or published. See `docs/release-c
   `a11ydebt.rico`.
 - `scripts/compare_aissa.py` takes a corpus subcommand (`rico` or `androidcontrol`). The old
   two-argument Rico form still works.
+- Before going public: `CLAUDE.md` keeps only the project's own rules, `docs/roadmap.md` is a
+  public software roadmap, and the README's AI-use disclosure says the author directs the work,
+  reviews the changes and is responsible for the code. It also points to `prompts/` and
+  `reports/`, the record of the AI-assisted development.
+- `docs/release-checklist.md` uses the trusted-publishing workflow and attaches no files to the
+  GitHub release.

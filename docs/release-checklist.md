@@ -24,11 +24,11 @@ each one with `--help` at release time.
       ```
 - [ ] The versions agree: `__version__`, `CITATION.cff` and `.zenodo.json` all say 0.1.0
       (`tests/test_release_metadata.py` checks this).
-- [ ] **Decide what becomes public.** The git history includes `prompts/`, `reports/`,
-      `CLAUDE.md`, `docs/roadmap.md` and `docs/session-log.md`. They hold local paths (for example
-      `/Volumes/Kraishan/...`) and internal planning notes; the history scan of 2026-11-10 found
-      no secrets. Keeping them is the most transparent record of AI-assisted work. Removing them
-      means rewriting history, which is a deletion and needs Obada's decision.
+- [x] **Decide what becomes public.** Decided on 2026-11-10 (P07, D1): the history is kept as
+      it is, the most transparent record of AI-assisted work. `CLAUDE.md` and `docs/roadmap.md`
+      were made public-safe in the current tree, and a full-history scan found no secrets (see
+      report R07).
+- [ ] The README renders on PyPI: `uvx twine check --strict dist/*`.
 - [ ] **Placeholders.** This must list only what is still unknown:
       ```bash
       grep -n PLACEHOLDER CITATION.cff .zenodo.json
@@ -39,7 +39,7 @@ each one with `--help` at release time.
 
 ## 1. Approval (Obada)
 ```bash
-touch RELEASE_APPROVED    # in ~/research/a11ydebt; it is gitignored and never committed
+touch RELEASE_APPROVED    # in the repository root; it is gitignored and never committed
 ```
 
 ## 2. Make the repository public (Obada runs this)
@@ -73,13 +73,15 @@ git tag -a v0.1.0 -m "a11ydebt 0.1.0"
 git push origin v0.1.0
 ```
 
-## 6. GitHub release (this triggers Zenodo)
+## 6. GitHub release (this triggers Zenodo and the PyPI workflow)
+Step 8's one-time setup must be done first.
 ```bash
-rm -rf dist && uv build
-gh release create v0.1.0 dist/a11ydebt-0.1.0.tar.gz dist/a11ydebt-0.1.0-py3-none-any.whl \
-  --verify-tag --title "a11ydebt 0.1.0" --notes-file <(sed -n '/^## \[0.1.0\]/,/^## \[/p' CHANGELOG.md)
+gh release create v0.1.0 --verify-tag --title "a11ydebt 0.1.0" \
+  --notes-file <(awk '/^## \[0.1.0\]/{f=1;next} /^## \[/{f=0} /^\[[^]]+\]: /{next} f' CHANGELOG.md)
 ```
-Zenodo mints a version DOI and a concept DOI within minutes; check the Zenodo GitHub page.
+No files are attached. `.github/workflows/publish.yml` builds the sdist and wheel from the tag
+and uploads them to PyPI (step 8), and Zenodo archives the source. Zenodo mints a version DOI and
+a concept DOI within minutes; check the Zenodo GitHub page.
 
 ## 7. DOI badge and CITATION.cff
 - README, under the title:
@@ -94,19 +96,34 @@ Zenodo mints a version DOI and a concept DOI within minutes; check the Zenodo Gi
   ```
 - Commit and push. Do not move the tag; the DOI files belong to the next version.
 
-## 8. Optional: PyPI
-The name `a11ydebt` must be free on PyPI. Use a token from `~/.config/kraishan/secrets.env`, loaded
-only inside the shell that publishes, and never printed or committed. Trusted publishing from a
-GitHub Actions workflow is the alternative.
-```bash
-uv publish --publish-url https://test.pypi.org/legacy/ dist/*     # TestPyPI first
-uvx --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ a11ydebt --version
-uv publish dist/*                                                  # then PyPI
-```
-Then change the README install line to `pipx install a11ydebt`.
+## 8. PyPI (trusted publishing; no token anywhere)
+One-time setup, before step 6:
+- **PyPI (Obada, web UI):** at <https://pypi.org/manage/account/publishing/>, add a pending
+  GitHub publisher with project `a11ydebt`, owner `obadaKraishan`, repository `a11ydebt`,
+  workflow `publish.yml` and environment `pypi`.
+- **GitHub environment `pypi`:** Obada is the required reviewer, and deployments are limited to
+  tags matching `v*`:
+  ```bash
+  gh api -X PUT repos/obadaKraishan/a11ydebt/environments/pypi --input - <<EOF
+  {"reviewers": [{"type": "User", "id": $(gh api users/obadaKraishan --jq .id)}],
+   "prevent_self_review": false,
+   "deployment_branch_policy": {"protected_branches": false, "custom_branch_policies": true}}
+  EOF
+  gh api -X POST repos/obadaKraishan/a11ydebt/environments/pypi/deployment-branch-policies \
+    -f name='v*' -f type=tag
+  ```
 
-## 9. Optional: Hugging Face Space
-This needs a design first, for example a CPU Gradio app that shows `results/v0.1` and audits an
+Each release: publishing the GitHub release (step 6) starts the "Publish to PyPI" workflow. Its
+build job checks that the tag matches the package version. Its upload job waits until Obada
+approves the `pypi` deployment on the run's page in the Actions tab. Then check:
+```bash
+curl -s https://pypi.org/pypi/a11ydebt/json | python3 -c 'import json,sys; print(json.load(sys.stdin)["info"]["version"])'
+uv tool install a11ydebt && a11ydebt --version
+```
+
+## 9. Not for v0.1.0: Hugging Face Space
+Decided on 2026-11-10: no Space at v0.1.0; revisit after AISSA. It needs a design first, for
+example a CPU Gradio app that shows `results/v0.1` and audits an
 uploaded folder of Rico-format JSON. It must never host Rico data.
 ```bash
 hf repo create obadakr/a11ydebt --repo-type space --space-sdk gradio
@@ -115,6 +132,6 @@ hf upload obadakr/a11ydebt space/ . --repo-type space
 
 ## 10. After the release
 - Check the QR code on a phone, signed out.
-- Update `~/research/STATUS.md`, `docs/session-log.md` and the AISSA slide (DOI and QR code).
+- Update the project status, `docs/session-log.md` and the AISSA slide (DOI and QR code).
 - Suggested: Obada deletes `RELEASE_APPROVED` afterwards, so the next publish needs a fresh
   approval.
