@@ -29,7 +29,7 @@ whether it has one.
 
 ## The commands
 ```bash
-pipx install "git+https://github.com/obadaKraishan/a11ydebt.git"
+pipx install a11ydebt          # or: uv tool install a11ydebt
 
 # 1. Audit: per-screen and per-app counts (screens.csv, apps.csv, summary.json)
 a11ydebt audit rico path/to/rico --workers 8 --out audit_rico

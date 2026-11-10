@@ -12,16 +12,19 @@ Readers Cannot Read: Accessibility Debt in the GUI Corpora Behind Computer-Use A
 (Kraishan and Jitkajornwanich). From the raw data, it reproduces the paper's corpus coverage
 numbers (overall and by role) and its cluster-bootstrap intervals exactly.
 
-> Version 0.1.0, not yet released. It supports Rico and AndroidControl, and needs Python 3.10 or
-> later.
+> Version 0.1.0, released on 2026-11-10. It supports Rico and AndroidControl, and needs Python
+> 3.10 or later.
 
 ## Install
-From GitHub, for now (a PyPI release will follow):
+From PyPI:
 ```bash
-pipx install "git+https://github.com/obadaKraishan/a11ydebt.git"
+uv tool install a11ydebt
 # or
-uv tool install "git+https://github.com/obadaKraishan/a11ydebt.git"
+pipx install a11ydebt
 ```
+For the latest development version, install from GitHub instead:
+`uv tool install "git+https://github.com/obadaKraishan/a11ydebt.git"`.
+
 The runtime dependencies are pydantic and numpy. `a11ydebt summarize`, which reads the Kaggle
 kernel's Parquet outputs, also needs pyarrow: `pipx inject a11ydebt pyarrow`, or
 `uv tool install --with pyarrow ...`.

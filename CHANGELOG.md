@@ -6,8 +6,9 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
-## [0.1.0] - Unreleased
-The first version, prepared but not yet tagged or published. See `docs/release-checklist.md`.
+## [0.1.0] - 2026-11-10
+The first release. It audits Rico and AndroidControl and reproduces the corpus coverage numbers
+and cluster-bootstrap intervals of the IEEE AISSA 2026 paper exactly.
 
 ### Added
 - Package skeleton: a uv project on Python 3.12 (supports >=3.10), hatchling build, pydantic,
@@ -64,8 +65,9 @@ The first version, prepared but not yet tagged or published. See `docs/release-c
     classifiers and project URLs. The sdist holds src, tests, the Kaggle kernel and the top-level
     docs.
   - `CITATION.cff` (validated with cffconvert 2.0.0) is the software entry, with the AISSA 2026
-    paper as preferred-citation. `.zenodo.json` is prepared but not used yet. Both carry marked
-    DOI placeholders. `tests/test_release_metadata.py` keeps their versions in step.
+    paper as preferred-citation. `.zenodo.json` holds the Zenodo archive metadata. The paper DOI
+    is a marked, commented placeholder until IEEE Xplore assigns it.
+    `tests/test_release_metadata.py` keeps their versions in step.
   - `results/v0.1/`: the aggregate report tables for Rico, AndroidControl 10 shards and
     AndroidControl all 20 shards (a robustness extension, not in the paper).
   - Docs: `docs/data-card.md`, `docs/how-to-audit.md` (a two-page handout),

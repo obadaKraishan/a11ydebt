@@ -20,13 +20,5 @@
     "content descriptions",
     "Rico",
     "AndroidControl"
-  ],
-  "related_identifiers": [
-    {
-      "identifier": "PLACEHOLDER: IEEE Xplore DOI of the AISSA 2026 paper (fill before the release, or remove this entry)",
-      "relation": "isSupplementTo",
-      "resource_type": "publication-conferencepaper",
-      "scheme": "doi"
-    }
   ]
 }

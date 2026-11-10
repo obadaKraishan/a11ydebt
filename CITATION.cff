@@ -15,8 +15,7 @@ authors:
 version: "0.1.0"
 # PLACEHOLDER (software DOI): add the Zenodo DOI after the v0.1.0 release, then uncomment:
 # doi: "10.5281/zenodo.<record-id>"
-# PLACEHOLDER (release date): the date of the v0.1.0 GitHub release, then uncomment:
-# date-released: "YYYY-MM-DD"
+date-released: "2026-11-10"
 license: Apache-2.0
 repository-code: "https://github.com/obadaKraishan/a11ydebt"
 url: "https://github.com/obadaKraishan/a11ydebt"
