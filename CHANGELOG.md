@@ -38,6 +38,22 @@ All notable changes to this project are recorded here. The format follows
 - `scripts/aissa_androidcontrol_reference.py` records the shards and episode ids AISSA used.
   `scripts/compare_aissa.py androidcontrol` checks a run against AISSA.
 - pyarrow 26.0.1 is a dev dependency, for the kernel tests and the scripts.
+- S3, bootstrap and report:
+  - `a11ydebt.bootstrap`: the cluster bootstrap of pooled coverage, ported from AISSA's
+    ReviewerChecks (`cluster_bootstrap_rate`, `pct_ci`, the cluster rules), plus the Wilson
+    interval. Apps are clusters, and an AndroidControl episode with no app is its own cluster.
+    The defaults are 5,000 resamples and seed 20260908, both configurable. Resamples are drawn
+    in blocks, bit-identical to AISSA's loop.
+  - `a11ydebt.report` and the CLI `a11ydebt report [LABEL=]AUDIT_DIR ... [--out DIR]
+    [--n-resamples N] [--seed S] [--conf C]`. It writes `report.md`, `coverage.csv`, `roles.csv`
+    and `screens_with_debt.csv` (default `data/release/report/`). Coverage carries app-cluster
+    and screen-cluster 95% intervals, and each interval has its own seeded generator.
+  - `scripts/compare_aissa.py bootstrap` replays AISSA's shared-stream bootstrap and reproduces
+    all four published `clustered_coverage` intervals and both `clustered_gap` intervals exactly.
+  - `scripts/check_androidcontrol_all20.py`: sanity checks for the all-20-shard tables.
+  - `docs/reproduction-bootstrap.md`, and an all-20 section in
+    `docs/reproduction-androidcontrol.md`.
+- numpy (>=1.26) is now a runtime dependency, for the bootstrap.
 
 ### Fixed
 - `CorpusCoverage.n_apps` no longer counts screens without an identified app as an app.

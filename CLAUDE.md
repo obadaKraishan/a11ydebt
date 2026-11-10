@@ -27,11 +27,13 @@ coverage numbers from raw data. The Rico references are needs-label coverage of 
   number, so any change needs a test, a CHANGELOG entry and a re-run of `scripts/compare_aissa.py`.
 
 ## Stack
-Python 3.12 (supports >=3.10), uv, ruff, pytest, pydantic. The only runtime dependency is pydantic.
+Python 3.12 (supports >=3.10), uv, ruff, pytest, pydantic. The runtime dependencies are pydantic
+and numpy (added in S3 for the bootstrap).
 LLM calls (v1.1 only) go through `~/research/_shared/llm_client.py`.
 
 ## Layout
-- `src/a11ydebt/`: taxonomy (codebook), rico (loader), coverage (metrics), cli
+- `src/a11ydebt/`: taxonomy (codebook), rico and androidcontrol (loaders), coverage (metrics),
+  bootstrap (cluster CIs), report (tables), cli
 - `tests/`: synthetic fixtures in `tests/fixtures/rico/`, never real Rico
 - `scripts/`: dev-only checks, such as `compare_aissa.py`
 - `kaggle/<job>/` and `batch/`
@@ -50,6 +52,10 @@ uv run python kaggle/androidcontrol_parse/build_kernel.py kaggle/androidcontrol_
 kaggle kernels push -p kaggle/androidcontrol_parse/build/run1
 kaggle kernels output obadakraishan/a11ydebt-androidcontrol-run1 -p data/interim/androidcontrol/run1
 uv run python scripts/compare_aissa.py androidcontrol data/interim/androidcontrol/run1 data/interim/aissa_reference
+uv run a11ydebt summarize androidcontrol data/interim/androidcontrol --out data/interim/audit_androidcontrol_all20
+uv run python scripts/check_androidcontrol_all20.py data/interim/androidcontrol data/interim/audit_androidcontrol_all20 data/interim/audit_androidcontrol_run1 data/interim/aissa_reference
+uv run python scripts/compare_aissa.py bootstrap data/interim/audit_rico data/interim/audit_androidcontrol_run1 data/interim/aissa_reference
+uv run a11ydebt report "Rico=data/interim/audit_rico" "AndroidControl, 10 shards (AISSA)=data/interim/audit_androidcontrol_run1" "AndroidControl, all 20 shards=data/interim/audit_androidcontrol_all20"
 ```
 
 ## Definition of done (each session)

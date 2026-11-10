@@ -10,16 +10,44 @@ GUI Corpora Behind Computer-Use Agents* (Kraishan and Jitkajornwanich).
 
 ## Quick start (development)
 ```bash
-uv sync                      # Python 3.10+; installs pydantic, plus ruff and pytest for dev
+uv sync                      # Python 3.10+; installs pydantic and numpy, plus ruff and pytest for dev
 uv run pytest                # tests use tiny synthetic fixtures, no data needed
-uv run a11ydebt audit rico data/raw/rico --workers 8 --out data/interim/audit_rico
-uv run a11ydebt audit androidcontrol android_control-00000-of-00020 --splits splits.json
 ```
 
-The full AndroidControl corpus (about 50 GB) is parsed by a private Kaggle CPU kernel
-(`kaggle/androidcontrol_parse/`). `a11ydebt summarize androidcontrol` turns its outputs into the
-same tables. Both corpora reproduce the AISSA 2026 numbers exactly (`docs/reproduction-rico.md`,
-`docs/reproduction-androidcontrol.md`).
+## Usage
+There are three steps: audit a corpus, then (for AndroidControl on Kaggle) summarize, then report.
+
+```bash
+# 1. Audit: per-screen and per-app counts, written as screens.csv, apps.csv and summary.json
+uv run a11ydebt audit rico data/raw/rico --workers 8 --out data/interim/audit_rico
+uv run a11ydebt audit androidcontrol android_control-00000-of-00020 --splits splits.json \
+    --out data/interim/audit_androidcontrol
+
+# 2. The full AndroidControl corpus (about 50 GB) is parsed on Kaggle instead
+#    (kaggle/androidcontrol_parse/); summarize turns the pulled outputs into the same tables
+uv run a11ydebt summarize androidcontrol data/interim/androidcontrol \
+    --out data/interim/audit_androidcontrol_all20
+
+# 3. Report: Markdown and CSV tables with 95% cluster-bootstrap intervals
+uv run a11ydebt report "Rico=data/interim/audit_rico" \
+    "AndroidControl=data/interim/audit_androidcontrol_all20" --out data/release/report
+```
+
+`a11ydebt report` takes one or more audit folders, each optionally named `LABEL=FOLDER`. It
+writes `report.md`, `coverage.csv`, `roles.csv` and `screens_with_debt.csv`. For each corpus the
+tables cover:
+- coverage for the three populations, with app-cluster and screen-cluster bootstrap intervals
+  (the CSV adds the element-level Wilson interval);
+- needs_label coverage by role;
+- screens with at least one unlabelled element.
+
+The defaults follow the AISSA paper: 5,000 resamples, seed 20260908, 95% intervals. Change them
+with `--n-resamples`, `--seed` and `--conf`. App clusters are apps. On AndroidControl, an episode
+with no identified app is its own cluster.
+
+Both corpora reproduce the AISSA 2026 numbers exactly, including the published cluster-bootstrap
+intervals (`docs/reproduction-rico.md`, `docs/reproduction-androidcontrol.md`,
+`docs/reproduction-bootstrap.md`).
 
 ## Data
 a11ydebt ships **no data**. Download Rico yourself under its research-use terms

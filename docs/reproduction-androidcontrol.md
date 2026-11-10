@@ -84,5 +84,47 @@ needs-label elements. Per-episode apps also equal AISSA's `androidcontrol_episod
 | icon_like | 194,529 | 122,074 | 62.75% | 20,779 of 49,892 |
 | interactive_image (P01, new) | 133,266 | 78,469 | 58.88% | 15,569 of 49,892 |
 
-Run 2 covers shards 00010 to 00019 (`obadakraishan/a11ydebt-androidcontrol-run2`) and extends the
-audit to all 20 shards. It has no AISSA counterpart.
+## All 20 shards (run 1 + run 2): no AISSA counterpart
+AISSA parsed only shards 00000 to 00009, so **nothing in this section can be checked against the
+paper**. Run 2 (`obadakraishan/a11ydebt-androidcontrol-run2`, version 1, built from `3896724`,
+the same bundled modules as run 1) parsed shards 00010 to 00019. It finished `complete` in
+2,028 s on 4 CPUs, with 11.9 MB of output and 0 failed or truncated shards and 0 episode failures.
+
+```bash
+uv run a11ydebt summarize androidcontrol data/interim/androidcontrol --out data/interim/audit_androidcontrol_all20
+uv run python scripts/check_androidcontrol_all20.py data/interim/androidcontrol \
+    data/interim/audit_androidcontrol_all20 data/interim/audit_androidcontrol_run1 data/interim/aissa_reference
+```
+
+`check_androidcontrol_all20.py` passes every check:
+- All 20 shards are present once, both runs are `complete`, and nothing failed or was truncated.
+- There are **15,283** episodes (7,623 + 7,660), none in two shards, and no screen id twice.
+- The run-1 rows inside the all-20 table are identical to run 1 and still add up to AISSA's
+  totals.
+
+| Quantity | All 20 shards | Run 1 (AISSA's 10) |
+|---|---:|---:|
+| Shards / episodes | 20 / 15,283 | 10 / 7,623 |
+| Splits (train / validation / test episodes) | 13,603 / 137 / 1,543 | 6,769 / 71 / 783 |
+| Screens (observations; screens with no nodes) | 99,131 (10) | 49,892 (4) |
+| Nodes / included | 21,825,664 / 13,494,134 | 11,002,225 / 6,831,063 |
+| Apps: over all episodes / over episodes with needs-label elements | 770 / 769 | 701 / 700 |
+| Episodes with no identified app (with needs-label elements) | 490 (485) | 253 (251) |
+
+| Population | Candidates | Labelled | Coverage | Screens with at least one unlabelled candidate |
+|---|---:|---:|---:|---:|
+| needs_label | 2,894,185 | 1,654,820 | 57.18% | 98,710 of 99,131 |
+| icon_like | 390,697 | 243,562 | 62.34% | 41,572 of 99,131 |
+| interactive_image | 266,281 | 156,403 | 58.74% | 31,027 of 99,131 |
+
+| Role (needs label) | Candidates | Labelled | Coverage |
+|---|---:|---:|---:|
+| button | 218,529 | 156,460 | 71.60% |
+| image | 2,383,470 | 1,389,033 | 58.28% |
+| input | 49,004 | 13,090 | 26.71% |
+| other | 230,038 | 89,759 | 39.02% |
+| text | 13,144 | 6,478 | 49.28% |
+
+Adding the second half of the corpus moves needs-label coverage by 0.09 points (57.27% to 57.18%)
+and icon-like coverage by 0.41 points (62.75% to 62.34%). Cluster-bootstrap intervals for both
+are in `docs/reproduction-bootstrap.md`.

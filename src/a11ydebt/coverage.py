@@ -6,8 +6,8 @@ optionally in parallel, and ``audit_androidcontrol()`` over AndroidControl TFRec
 record unreadable inputs instead of stopping.
 
 Proportions are pooled: an app's coverage is labelled / candidates over all of its screens,
-which is how the AISSA paper reports corpus coverage. Bootstrap intervals clustered by app
-arrive in S3.
+which is how the AISSA paper reports corpus coverage. Cluster-bootstrap intervals are in
+``a11ydebt.bootstrap``, and ``a11ydebt.report`` puts them in tables.
 """
 
 from __future__ import annotations

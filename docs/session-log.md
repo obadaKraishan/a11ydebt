@@ -57,3 +57,25 @@ Five lines per session: did / decided / next / open questions / usage notes.
   are pending.
 - **Usage notes:** Kaggle did the 25 GB of downloads and parsing. Local work was the code, the
   tests, and a 7-minute Rico regression run. Polling ran in background loops.
+
+## 2026-11-10 · S3 bootstrap and report (prompt P04, report R04, both in a11ydebt/)
+- **Did:**
+  - Part A: HF token files set to 600, `README_HF_CACHE_LAYOUT.md` written on the drive, and
+    issue #1 opened (Rico tar.gz streaming, labelled v0.2).
+  - Pulled run 2 (0 failed or truncated shards) and built the all-20 tables: 15,283 episodes,
+    57.18% needs-label, 62.34% icon-like. The run-1 subset still equals AISSA.
+  - Ported AISSA's cluster bootstrap (`a11ydebt.bootstrap`) and added `a11ydebt report`. The
+    replay reproduces all six AISSA intervals exactly, with bit-identical draws. 110 tests pass.
+- **Decided:**
+  - AISSA's `bootstrap.py` is an import shim, so the port is from ReviewerChecks.
+  - numpy becomes a runtime dependency.
+  - `report` seeds each interval with its own generator. That differs from the paper's shared
+    stream by up to 0.02 points, and `compare_aissa.py bootstrap` gives the exact paper numbers.
+- **Next:** S4, packaging (pyproject metadata, `pipx install`), the README citation, CITATION.cff,
+  and the release checklist. No tag or upload until `RELEASE_APPROVED`.
+- **Open questions:**
+  - Should `report` print the paper's exact intervals (shared stream) instead?
+  - Should the all-20 numbers go into the AISSA talk?
+  - Paper status and blind-review rules, before the repo goes public.
+- **Usage notes:** Kaggle did run 2 (2,028 s of CPU). Local work was the code, a 6-minute Rico
+  re-audit and an 11-second report. There were no model calls.
