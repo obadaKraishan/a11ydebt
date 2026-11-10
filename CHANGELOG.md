@@ -39,6 +39,11 @@ All notable changes to this project are recorded here. The format follows
   `scripts/compare_aissa.py androidcontrol` checks a run against AISSA.
 - pyarrow 26.0.1 is a dev dependency, for the kernel tests and the scripts.
 
+### Fixed
+- `CorpusCoverage.n_apps` no longer counts screens without an identified app as an app.
+- The Kaggle job's `run_summary.json` counts distinct apps across shards instead of summing
+  per-shard counts.
+
 ### Changed
 - `coverage()` and `screen_coverage()` accept any screen that follows `counts.ScreenLike`, so they
   work for both corpora. `POPULATIONS` moved to `a11ydebt.counts` and is re-exported from

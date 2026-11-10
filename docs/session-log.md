@@ -36,3 +36,24 @@ Five lines per session: did / decided / next / open questions / usage notes.
   - Stream Rico from `unique_uis.tar.gz`, so users skip the 16 GB extraction?
 - **Usage notes:** one long session covered P01 (hub, S0 and S1). The Rico audit is deterministic
   local parsing with no model calls. The only LLM call was a 1-prompt local Ollama smoke test.
+
+## 2026-11-10 · S2 AndroidControl on Kaggle (prompt P02, report R02, both in ~/research/)
+- **Did:**
+  - Ported AISSA's TFRecord and protobuf reader (`tfrecord.py`) and its AndroidControl parse logic
+    (`androidcontrol.py`), and added the shared counter (`counts.py`).
+  - Built the private CPU Kaggle kernel (`kaggle/androidcontrol_parse/`), `summarize
+    androidcontrol` and `compare_aissa.py androidcontrol`. 80 tests pass.
+  - Run 1 (AISSA's shards 00000-00009, 20.6 min, 12.1 MB) reproduces AISSA exactly: 57.27%
+    needs-label, 62.75% icon-like, the role table, 10 shards, 7,623 episodes, 49,888 screens and
+    700 apps (docs/reproduction-androidcontrol.md). The Rico regression run is still exact after
+    the counter refactor.
+- **Decided:**
+  - AISSA's app count is over episodes with needs-label elements (700); 701 over all episodes.
+  - `n_apps` excludes the unknown app.
+  - Run 2 (shards 00010-00019) was started and not waited on.
+- **Next:** pull run 2 and build all-20-shard totals. S3 adds the cluster bootstrap by app
+  (port AISSA's `bootstrap.py`) and `a11ydebt report`.
+- **Open questions:** whether to stream Rico from `unique_uis.tar.gz` for users. The run 2 results
+  are pending.
+- **Usage notes:** Kaggle did the 25 GB of downloads and parsing. Local work was the code, the
+  tests, and a 7-minute Rico regression run. Polling ran in background loops.

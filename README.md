@@ -13,7 +13,13 @@ GUI Corpora Behind Computer-Use Agents* (Kraishan and Jitkajornwanich).
 uv sync                      # Python 3.10+; installs pydantic, plus ruff and pytest for dev
 uv run pytest                # tests use tiny synthetic fixtures, no data needed
 uv run a11ydebt audit rico data/raw/rico --workers 8 --out data/interim/audit_rico
+uv run a11ydebt audit androidcontrol android_control-00000-of-00020 --splits splits.json
 ```
+
+The full AndroidControl corpus (about 50 GB) is parsed by a private Kaggle CPU kernel
+(`kaggle/androidcontrol_parse/`). `a11ydebt summarize androidcontrol` turns its outputs into the
+same tables. Both corpora reproduce the AISSA 2026 numbers exactly (`docs/reproduction-rico.md`,
+`docs/reproduction-androidcontrol.md`).
 
 ## Data
 a11ydebt ships **no data**. Download Rico yourself under its research-use terms
