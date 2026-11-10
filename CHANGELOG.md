@@ -6,6 +6,12 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+- After the 0.1.0 release: the README has PyPI and Zenodo DOI badges, and its software BibTeX
+  entry carries the concept DOI. `CITATION.cff` gains `doi` (the concept DOI,
+  10.5281/zenodo.24121869) and `identifiers` (the 0.1.0 version DOI, 10.5281/zenodo.24121870).
+  The paper DOI follows once IEEE Xplore assigns it.
+
 ## [0.1.0] - 2026-11-10
 The first release. It audits Rico and AndroidControl and reproduces the corpus coverage numbers
 and cluster-bootstrap intervals of the IEEE AISSA 2026 paper exactly.
@@ -100,3 +106,6 @@ and cluster-bootstrap intervals of the IEEE AISSA 2026 paper exactly.
   `reports/`, the record of the AI-assisted development.
 - `docs/release-checklist.md` uses the trusted-publishing workflow and attaches no files to the
   GitHub release.
+
+[Unreleased]: https://github.com/obadaKraishan/a11ydebt/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/obadaKraishan/a11ydebt/releases/tag/v0.1.0

@@ -1,6 +1,8 @@
 # a11ydebt
 
 [![CI](https://github.com/obadaKraishan/a11ydebt/actions/workflows/ci.yml/badge.svg)](https://github.com/obadaKraishan/a11ydebt/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/a11ydebt.svg)](https://pypi.org/project/a11ydebt/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24121869.svg)](https://doi.org/10.5281/zenodo.24121869)
 
 **Measure the accessibility debt in the GUI corpora behind computer-use agents.** Agents that
 operate phones learn from large corpora of recorded screens. A screen reader can only announce a
@@ -135,9 +137,12 @@ carries both entries.
   version = {0.1.0},
   year    = {2026},
   url     = {https://github.com/obadaKraishan/a11ydebt},
-  note    = {Zenodo DOI to be added at release}
+  doi     = {10.5281/zenodo.24121869}
 }
 ```
+The software DOI [10.5281/zenodo.24121869](https://doi.org/10.5281/zenodo.24121869) covers every
+version. Version 0.1.0 alone is
+[10.5281/zenodo.24121870](https://doi.org/10.5281/zenodo.24121870).
 
 ## Development
 ```bash

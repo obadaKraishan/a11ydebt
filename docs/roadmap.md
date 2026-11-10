@@ -84,9 +84,9 @@ See `docs/licenses.md` for each dataset's terms as checked.
 
 The full steps are in `docs/release-checklist.md`.
 
-- [ ] Version tag and Zenodo DOI
-- [ ] CITATION.cff
-- [ ] Data card stating what is not redistributed
+- [x] Version tag and Zenodo DOI
+- [x] CITATION.cff
+- [x] Data card stating what is not redistributed
 - [ ] QR code on the AISSA slide linking to the repo
 
 ## 9. Timeline

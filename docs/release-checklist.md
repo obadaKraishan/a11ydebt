@@ -1,9 +1,12 @@
 # Release checklist: a11ydebt v0.1.0
 
-**Nothing in this file has been run.** Every step from step 1 on needs `RELEASE_APPROVED` in the
-repo root. Only Obada creates that file, and the hub's release-gate hook blocks publishing
-commands without it. The commands below use the documented flags of `gh`, `uv` and `hf`; confirm
-each one with `--help` at release time.
+**v0.1.0 was released with these steps on 2026-11-10** (tag `v0.1.0`; PyPI
+<https://pypi.org/project/a11ydebt/0.1.0/>; Zenodo concept DOI 10.5281/zenodo.24121869, version
+DOI 10.5281/zenodo.24121870). Reuse the list for later versions, replacing the version number.
+
+Every step from step 1 on needs `RELEASE_APPROVED` in the repo root. Only Obada creates that
+file, and the release-gate hook blocks publishing commands without it. The commands below use the
+documented flags of `gh` and `uv`; confirm each one with `--help` at release time.
 
 ## 0. Pre-flight (safe to run any time; publishes nothing)
 - [ ] CI is green on `main` for Python 3.10 to 3.13: `gh run list --limit 1`.

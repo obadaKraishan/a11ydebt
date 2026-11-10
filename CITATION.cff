@@ -13,8 +13,15 @@ authors:
     given-names: Obada
     affiliation: "College of Media and Communication, Texas Tech University"
 version: "0.1.0"
-# PLACEHOLDER (software DOI): add the Zenodo DOI after the v0.1.0 release, then uncomment:
-# doi: "10.5281/zenodo.<record-id>"
+# The concept DOI covers every version; each version also has its own DOI (identifiers below).
+doi: "10.5281/zenodo.24121869"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24121869"
+    description: "Concept DOI: all versions of a11ydebt"
+  - type: doi
+    value: "10.5281/zenodo.24121870"
+    description: "Version DOI: a11ydebt 0.1.0"
 date-released: "2026-11-10"
 license: Apache-2.0
 repository-code: "https://github.com/obadaKraishan/a11ydebt"
