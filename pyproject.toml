@@ -57,11 +57,13 @@ path = "src/a11ydebt/__init__.py"
 [tool.hatch.build.targets.wheel]
 packages = ["src/a11ydebt"]
 
-# The sdist carries what is needed to build and test the package: no data, no planning notes.
+# The sdist carries what is needed to build and test the package (tests/test_kaggle_job.py needs
+# kaggle/): no data and no planning notes.
 [tool.hatch.build.targets.sdist]
 include = [
     "/src",
     "/tests",
+    "/kaggle",
     "/README.md",
     "/LICENSE",
     "/NOTICE",

@@ -1,5 +1,5 @@
 # Data is never committed. Rico's research-use terms forbid redistributing raw files;
-# data/raw/rico is a symlink to /Volumes/Kraishan/research-data/a11ydebt/raw/rico.
+# data/raw/rico is a symlink to a local copy of Rico outside the repo.
 data/
 
 # Secrets
