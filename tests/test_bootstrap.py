@@ -116,7 +116,9 @@ def test_percentile_levels_match_aissas_literals():
 def test_wilson_interval():
     low, high = wilson_ci(50, 100)
     assert (low, high) == pytest.approx((0.40383, 0.59617), abs=1e-5)
-    assert wilson_ci(0, 10)[0] == 0.0
+    # ``** 0.5`` goes through the platform libm, so the zero bound is 0.0 on macOS and about
+    # 3e-17 on Linux (glibc); AISSA's formula behaves the same way.
+    assert wilson_ci(0, 10)[0] == pytest.approx(0.0, abs=1e-12)
     assert all(np.isnan(v) for v in wilson_ci(0, 0))
 
 
