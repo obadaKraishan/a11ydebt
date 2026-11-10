@@ -3,13 +3,16 @@
     a11ydebt audit rico PATH [--limit N] [--workers N] [--out DIR] [--quiet]
     a11ydebt audit androidcontrol SHARD [SHARD ...] [--splits splits.json] [--out DIR] [--quiet]
     a11ydebt summarize androidcontrol KAGGLE_OUTPUT_DIR [--out DIR]
+    a11ydebt report [LABEL=]AUDIT_DIR [...] [--out DIR] [--n-resamples N] [--seed S] [--conf C]
 
 For Rico, PATH is a folder holding ``combined/*.json`` (or the JSON files directly) and, ideally,
 ``ui_details.csv`` for app names. For AndroidControl, each SHARD is a GZIP TFRecord file such as
 ``android_control-00000-of-00020``. The corpus table goes to stdout. With ``--out``, it also
 writes ``screens.csv``, ``apps.csv`` and ``summary.json``. The full AndroidControl corpus (about
 47 GB) is parsed on Kaggle instead (``kaggle/androidcontrol_parse/``); ``summarize androidcontrol``
-turns the pulled kernel outputs into the same tables (it needs pyarrow).
+turns the pulled kernel outputs into the same tables (it needs pyarrow). ``report`` reads one or
+more of those ``--out`` folders and writes ``report.md`` plus CSV tables with cluster-bootstrap
+intervals (default folder ``data/release/report``).
 """
 
 from __future__ import annotations
@@ -24,7 +27,9 @@ from pathlib import Path
 
 from a11ydebt import __version__
 from a11ydebt.androidcontrol import load_splits
+from a11ydebt.bootstrap import DEFAULT_CONF, DEFAULT_N_RESAMPLES, DEFAULT_SEED
 from a11ydebt.coverage import Counts, CoverageReport, audit_androidcontrol, audit_rico
+from a11ydebt.report import build_report, format_markdown, load_audit, write_report
 from a11ydebt.rico import find_screen_files
 
 __all__ = ["format_summary", "main", "write_outputs"]
@@ -189,6 +194,44 @@ def _summarize_androidcontrol(args: argparse.Namespace) -> int:
     return 0
 
 
+def _report_input(text: str) -> tuple[str | None, Path]:
+    """``DIR`` or ``LABEL=DIR``; a folder whose own name contains "=" still works."""
+    label, sep, rest = text.partition("=")
+    if sep and label and Path(rest).is_dir() and not Path(text).is_dir():
+        return label, Path(rest)
+    return None, Path(text)
+
+
+def _report(args: argparse.Namespace) -> int:
+    if args.n_resamples < 1:
+        print("a11ydebt: --n-resamples must be at least 1", file=sys.stderr)
+        return 2
+    if not 0 < args.conf < 1:
+        print("a11ydebt: --conf must be between 0 and 1", file=sys.stderr)
+        return 2
+    try:
+        audits = [load_audit(path, label) for label, path in map(_report_input, args.inputs)]
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"a11ydebt: {exc}", file=sys.stderr)
+        return 2
+    labels = [a.label for a in audits]
+    if len(set(labels)) != len(labels):
+        print(
+            f"a11ydebt: two inputs share a label ({', '.join(labels)}); "
+            "name each one as LABEL=AUDIT_DIR",
+            file=sys.stderr,
+        )
+        return 2
+    reports = [
+        build_report(a, n_resamples=args.n_resamples, seed=args.seed, conf=args.conf)
+        for a in audits
+    ]
+    print(format_markdown(reports))
+    for path in write_report(reports, args.out):
+        print(f"wrote {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="a11ydebt", description="Audit accessibility debt in GUI-agent corpora."
@@ -223,6 +266,36 @@ def build_parser() -> argparse.ArgumentParser:
     )
     s_ac.add_argument("path", type=Path, help="the folder `kaggle kernels output` wrote")
     s_ac.add_argument("--out", type=Path, help="write screens.csv, apps.csv and summary.json here")
+    rep = commands.add_parser(
+        "report", help="Markdown and CSV tables with cluster-bootstrap intervals"
+    )
+    rep.add_argument(
+        "inputs",
+        nargs="+",
+        metavar="[LABEL=]AUDIT_DIR",
+        help="an --out folder of `audit` or `summarize`; LABEL names it in the report",
+    )
+    rep.add_argument(
+        "--out",
+        type=Path,
+        default=Path("data/release/report"),
+        help="output folder (default data/release/report)",
+    )
+    rep.add_argument(
+        "--n-resamples",
+        type=int,
+        default=DEFAULT_N_RESAMPLES,
+        help=f"bootstrap resamples per interval (default {DEFAULT_N_RESAMPLES:,}, as AISSA)",
+    )
+    rep.add_argument(
+        "--seed",
+        type=int,
+        default=DEFAULT_SEED,
+        help=f"seed for every interval's generator (default {DEFAULT_SEED}, as AISSA)",
+    )
+    rep.add_argument(
+        "--conf", type=float, default=DEFAULT_CONF, help="interval level (default 0.95)"
+    )
     return parser
 
 
@@ -234,6 +307,8 @@ def main(argv: list[str] | None = None) -> int:
         return _audit_androidcontrol(args)
     if args.command == "summarize" and args.corpus == "androidcontrol":
         return _summarize_androidcontrol(args)
+    if args.command == "report":
+        return _report(args)
     return 2  # pragma: no cover - argparse enforces the choices above
 
 
