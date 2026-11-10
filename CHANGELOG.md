@@ -23,3 +23,25 @@ All notable changes to this project are recorded here. The format follows
   `screens.csv`, `apps.csv` and `summary.json`.
 - `scripts/compare_aissa.py`: a dev-only exact comparison with the AISSA pipeline outputs.
 - Tests: three synthetic fixture screens (not derived from Rico), 51 tests in total.
+- S2, AndroidControl:
+  - `a11ydebt.counts`: one shared per-screen counting loop, stdlib only.
+  - `a11ydebt.tfrecord`: the pure-Python TFRecord and protobuf readers, ported from AISSA.
+  - `a11ydebt.androidcontrol`: episodes, screens per step, the codebook flags, and the episode app
+    from the dominant resource-id package.
+  - `a11ydebt.kaggle_outputs`: reads the Kaggle kernel's outputs.
+- CLI: `a11ydebt audit androidcontrol SHARD...` and `a11ydebt summarize androidcontrol DIR`.
+- `kaggle/androidcontrol_parse/`: a private CPU script kernel that downloads, verifies, parses and
+  deletes one shard at a time. It writes per-screen Parquet and candidate-node Parquet, checkpoints
+  each shard, resumes, and stops before Kaggle's 12-hour limit. It is built by `build_kernel.py`
+  with pinned pyarrow and a pinned image. Run 1 covers AISSA's shards 00000-00009 and run 2
+  covers 00010-00019.
+- `scripts/aissa_androidcontrol_reference.py` records the shards and episode ids AISSA used.
+  `scripts/compare_aissa.py androidcontrol` checks a run against AISSA.
+- pyarrow 26.0.1 is a dev dependency, for the kernel tests and the scripts.
+
+### Changed
+- `coverage()` and `screen_coverage()` accept any screen that follows `counts.ScreenLike`, so they
+  work for both corpora. `POPULATIONS` moved to `a11ydebt.counts` and is re-exported from
+  `a11ydebt.rico`.
+- `scripts/compare_aissa.py` takes a corpus subcommand (`rico` or `androidcontrol`). The old
+  two-argument Rico form still works.

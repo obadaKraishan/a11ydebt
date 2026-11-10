@@ -44,7 +44,12 @@ LLM calls (v1.1 only) go through `~/research/_shared/llm_client.py`.
 uv run pytest
 uv run ruff check . && uv run ruff format --check .
 uv run a11ydebt audit rico data/raw/rico --workers 8 --out data/interim/audit_rico
-uv run --with pyarrow python scripts/compare_aissa.py data/interim/audit_rico data/interim/aissa_reference
+uv run python scripts/compare_aissa.py rico data/interim/audit_rico data/interim/aissa_reference
+# AndroidControl runs on Kaggle (see kaggle/androidcontrol_parse/README.md); poll rarely
+uv run python kaggle/androidcontrol_parse/build_kernel.py kaggle/androidcontrol_parse/config_run1.json
+kaggle kernels push -p kaggle/androidcontrol_parse/build/run1
+kaggle kernels output obadakraishan/a11ydebt-androidcontrol-run1 -p data/interim/androidcontrol/run1
+uv run python scripts/compare_aissa.py androidcontrol data/interim/androidcontrol/run1 data/interim/aissa_reference
 ```
 
 ## Definition of done (each session)
