@@ -156,3 +156,6 @@ The author directs the work, reviews the changes, and is responsible for the cod
 correctness. Commits made with Claude Code carry a `Co-Authored-By: Claude` trailer, so the
 history shows which changes were AI-assisted. No language model produces any number in the
 audit: the counts come from deterministic parsing, and the intervals from a seeded bootstrap.
+
+The [prompts/](prompts/) and [reports/](reports/) folders hold the session-by-session record of
+the AI-assisted development.
