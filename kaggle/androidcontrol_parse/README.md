@@ -26,7 +26,7 @@ At the end it writes `run_summary.json`, with the status, totals, versions, timi
 
 ## Build, push, poll, pull
 ```bash
-cd ~/research/a11ydebt
+# from the repository root
 uv run python kaggle/androidcontrol_parse/build_kernel.py kaggle/androidcontrol_parse/config_run1.json
 kaggle kernels push -p kaggle/androidcontrol_parse/build/run1
 kaggle kernels status obadakraishan/a11ydebt-androidcontrol-run1     # check about every 10 minutes
