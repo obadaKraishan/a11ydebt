@@ -1,0 +1,61 @@
+{
+  "activity_name": "org.example.notes/org.example.notes.MainActivity",
+  "activity": {
+    "root": {
+      "class": "com.android.internal.policy.PhoneWindow$DecorView",
+      "bounds": [0, 0, 1440, 2560],
+      "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+      "visible-to-user": true, "content-desc": [null],
+      "children": [
+        {
+          "class": "android.widget.LinearLayout",
+          "bounds": [0, 0, 1440, 2560],
+          "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": [null],
+          "children": [
+            {
+              "class": "android.widget.ImageButton", "resource-id": "org.example.notes:id/nav",
+              "bounds": [0, 84, 168, 252],
+              "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            },
+            {
+              "class": "android.support.v7.widget.AppCompatImageView", "resource-id": "org.example.notes:id/logo",
+              "bounds": [168, 84, 336, 252],
+              "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": ["App logo"]
+            },
+            {
+              "class": "android.widget.TextView", "resource-id": "org.example.notes:id/title",
+              "bounds": [336, 84, 1000, 252], "text": "Notes",
+              "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            },
+            {
+              "class": "android.widget.ImageView", "resource-id": "org.example.notes:id/search",
+              "bounds": [1272, 84, 1440, 252],
+              "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": ["null"]
+            },
+            {
+              "class": "android.widget.ImageButton", "resource-id": "org.example.notes:id/collapsed",
+              "bounds": [0, 0, 0, 0],
+              "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            },
+            {
+              "class": "android.widget.ImageButton", "resource-id": "org.example.notes:id/hidden",
+              "bounds": [1100, 84, 1272, 252],
+              "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+              "visible-to-user": false, "content-desc": [null]
+            }
+          ]
+        }
+      ]
+    },
+    "added_fragments": [],
+    "active_fragments": []
+  },
+  "is_keyboard_deployed": false,
+  "request_id": "101"
+}

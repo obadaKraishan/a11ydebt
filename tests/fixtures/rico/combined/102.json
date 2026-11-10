@@ -1,0 +1,75 @@
+{
+  "activity_name": "org.example.notes/org.example.notes.ListActivity",
+  "activity": {
+    "root": {
+      "class": "android.widget.FrameLayout",
+      "bounds": [0, 0, 1080, 1920],
+      "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+      "visible-to-user": true, "content-desc": [null],
+      "children": [
+        {
+          "class": "android.support.v7.widget.RecyclerView", "resource-id": "org.example.notes:id/list",
+          "bounds": [0, 200, 1080, 1700],
+          "clickable": false, "focusable": true, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": [null],
+          "children": [
+            {
+              "class": "android.widget.LinearLayout", "resource-id": "org.example.notes:id/row",
+              "bounds": [0, 200, 1080, 400],
+              "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null],
+              "children": [
+                {
+                  "class": "android.widget.ImageView", "resource-id": "org.example.notes:id/thumb",
+                  "bounds": [20, 220, 180, 380],
+                  "clickable": false, "focusable": true, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": [""]
+                },
+                {
+                  "class": "android.widget.TextView", "resource-id": "org.example.notes:id/row_title",
+                  "bounds": [200, 220, 880, 380], "text": "Buy milk",
+                  "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": [null]
+                }
+              ]
+            },
+            {
+              "class": "android.widget.CheckBox", "resource-id": "org.example.notes:id/done",
+              "bounds": [900, 220, 1060, 380],
+              "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            }
+          ]
+        },
+        {
+          "class": "android.support.design.widget.FloatingActionButton", "resource-id": "org.example.notes:id/fab",
+          "bounds": [880, 1720, 1040, 1880],
+          "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": ["Add note"]
+        },
+        {
+          "class": "android.widget.EditText", "resource-id": "org.example.notes:id/query",
+          "bounds": [0, 0, 1080, 200],
+          "clickable": true, "focusable": true, "long-clickable": true, "enabled": true,
+          "visible-to-user": true, "content-desc": [null]
+        },
+        {
+          "class": "android.widget.Button", "resource-id": "org.example.notes:id/save",
+          "bounds": [200, 1720, 600, 1880], "text": "Save",
+          "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": [null]
+        },
+        {
+          "class": "android.widget.ImageView", "resource-id": "org.example.notes:id/drag_handle",
+          "bounds": [0, 1720, 160, 1880],
+          "clickable": false, "focusable": false, "long-clickable": true, "enabled": true,
+          "visible-to-user": true
+        }
+      ]
+    },
+    "added_fragments": [],
+    "active_fragments": []
+  },
+  "is_keyboard_deployed": false,
+  "request_id": "102"
+}

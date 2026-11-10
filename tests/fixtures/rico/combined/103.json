@@ -1,0 +1,54 @@
+{
+  "activity_name": "com.example.weather/com.example.weather.MainActivity",
+  "activity": {
+    "root": {
+      "class": "com.android.internal.policy.PhoneWindow$DecorView",
+      "bounds": [0, 0, 1440, 2392],
+      "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+      "visible-to-user": true, "content-desc": [null],
+      "children": [
+        null,
+        {
+          "class": "android.webkit.WebView", "resource-id": "com.example.weather:id/radar",
+          "bounds": [0, 0, 1440, 1200],
+          "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": [null], "children": []
+        },
+        {
+          "class": "com.example.weather.ui.WeatherIcon", "resource-id": "com.example.weather:id/now",
+          "bounds": [100, 1300, 300, 1500],
+          "clickable": true, "focusable": false, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": ["Sunny"]
+        },
+        {
+          "class": "android.widget.ImageView", "resource-id": "com.example.weather:id/refresh",
+          "bounds": [400, 1300, 600, 1500], "text": "None",
+          "clickable": true, "focusable": false, "long-clickable": false, "enabled": false,
+          "visible-to-user": true, "content-desc": ["   "]
+        },
+        {
+          "class": "android.view.View", "resource-id": "com.example.weather:id/tap_target",
+          "bounds": [700, 1300, 900, 1500],
+          "clickable": true, "focusable": false, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": [null]
+        },
+        {
+          "class": "android.widget.ImageView", "resource-id": "com.example.weather:id/inverted",
+          "bounds": [1000, 1300, 900, 1500],
+          "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": [null]
+        },
+        {
+          "class": "android.widget.ImageButton", "resource-id": "com.example.weather:id/broken",
+          "bounds": ["a", "b"],
+          "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": [null]
+        }
+      ]
+    },
+    "added_fragments": [],
+    "active_fragments": []
+  },
+  "is_keyboard_deployed": false,
+  "request_id": "103"
+}
