@@ -100,3 +100,24 @@ Five lines per session: did / decided / next / open questions / usage notes.
   - Is the PyPI name available?
   - Confirm the AI-use wording for this repo's workflow.
 - **Usage notes:** no model calls and no Kaggle use. CI and local matrix runs took seconds each.
+
+## 2026-11-10 · v0.1.0 release (prompt P07, report R07, both in a11ydebt/)
+- **Did:**
+  - Made the tree public-safe: CLAUDE.md and docs/roadmap.md trimmed; the AI-use wording updated.
+  - Scanned the full history for personal material; nothing sensitive.
+  - Added the trusted-publishing workflow; Obada made the repo public.
+  - Tagged and released v0.1.0, now on PyPI (approved by Obada) and Zenodo (concept DOI
+    10.5281/zenodo.24121869, version DOI 10.5281/zenodo.24121870).
+- **Decided (Obada, R05 and this session):**
+  - D1: keep the history, trim the tree. D2: the new AI-use wording. D3: release without the
+    paper DOI.
+  - D4: sole software author. D5: PyPI yes, HF Space no.
+  - Also: the README install switched to PyPI before the tag, because PyPI's 0.1.0 page is
+    built from it.
+- **Next:** delete RELEASE_APPROVED. Add the paper DOI once IEEE Xplore assigns it. After AISSA:
+  v0.2 (issue #1), then S5.
+- **Open questions:**
+  - Zenodo dates the record 2026-11-11 (CET), while CITATION.cff says 2026-11-10.
+  - README links are relative, so they break on PyPI's project page.
+- **Usage notes:** no model calls and no Kaggle use. Seven CI runs (one cancelled when
+  superseded) plus one publish run (3 min, including the wait for approval).
