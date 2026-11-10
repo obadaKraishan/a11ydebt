@@ -1,15 +1,19 @@
-"""Compare an a11ydebt Rico audit with the numbers the AISSA 2026 pipeline reported.
+"""Compare a11ydebt audits with the numbers the AISSA 2026 pipeline reported.
 
-    uv run --with pyarrow python scripts/compare_aissa.py AUDIT_DIR REFERENCE_DIR [--out FILE]
+    uv run python scripts/compare_aissa.py [rico] AUDIT_DIR REFERENCE_DIR [--out FILE]
+    uv run python scripts/compare_aissa.py androidcontrol KAGGLE_OUT REFERENCE_DIR [--out FILE]
 
-AUDIT_DIR      output of ``a11ydebt audit rico ... --out AUDIT_DIR``
-               (screens.csv, apps.csv, summary.json)
-REFERENCE_DIR  copies of the AISSA outputs (accessibility-debt-agents, commit 97c0378):
-               rico_parse_report.json, rico_screens.parquet, manuscript_numbers.json
+rico: AUDIT_DIR is the output of ``a11ydebt audit rico ... --out AUDIT_DIR`` (screens.csv,
+apps.csv, summary.json). REFERENCE_DIR holds copies of the AISSA outputs (accessibility-debt-agents,
+commit 97c0378): rico_parse_report.json, rico_screens.parquet, manuscript_numbers.json.
 
-Prints Markdown tables: corpus totals, coverage by role (RQ1 Tables 1 and 2), and screen-by-screen
-and per-app agreement. Exits 1 if any AISSA quantity is not reproduced exactly. Dev-only: needs
-pyarrow, which is not a runtime dependency of a11ydebt.
+androidcontrol: KAGGLE_OUT is what ``kaggle kernels output`` pulled for run 1 (screens/*.parquet,
+shards/*.json, run_summary.json). REFERENCE_DIR also needs the files written by
+``scripts/aissa_androidcontrol_reference.py``.
+
+Prints Markdown tables: corpus totals, coverage by role (RQ1 Tables 1 and 2), and screen, episode,
+shard and app agreement. Exits 1 if any AISSA quantity is not reproduced exactly. Dev-only: it needs
+pyarrow (a dev dependency), which is not a runtime dependency of a11ydebt.
 """
 
 from __future__ import annotations
@@ -55,14 +59,16 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(fh))
 
 
-def rq1_tables(manuscript: dict) -> tuple[list[str], dict[str, list[str]]]:
+def rq1_tables(
+    manuscript: dict, dataset: str = "rico_2017"
+) -> tuple[list[str], dict[str, list[str]]]:
     tables = {t["name"]: t for t in manuscript["reports"]["RQ1"]["tables"]}
-    overall = next(r for r in tables["overall_coverage"]["rows"] if r[0] == "rico_2017")
-    by_role = {r[1]: r for r in tables["coverage_by_role"]["rows"] if r[0] == "rico_2017"}
+    overall = next(r for r in tables["overall_coverage"]["rows"] if r[0] == dataset)
+    by_role = {r[1]: r for r in tables["coverage_by_role"]["rows"] if r[0] == dataset}
     return overall, by_role
 
 
-def main(argv: list[str] | None = None) -> int:
+def main_rico(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("audit_dir", type=Path)
     parser.add_argument("reference_dir", type=Path)
@@ -201,6 +207,234 @@ def main(argv: list[str] | None = None) -> int:
     if args.out:
         args.out.write_text(text + "\n", encoding="utf-8")
     return 0 if all_ok else 1
+
+
+# (AISSA androidcontrol_screens.parquet column, a11ydebt screens parquet column)
+AC_SCREEN_FIELDS = [
+    ("n_nodes", "n_nodes"),
+    ("n_included", "n_included"),
+    ("n_needs_label", "needs_label_candidates"),
+    ("n_labelled", "needs_label_labelled"),
+    ("n_icon_like", "icon_like_candidates"),
+    ("n_icon_like_labelled", "icon_like_labelled"),
+]
+AC_EPISODE_FIELDS = [  # (AISSA androidcontrol_episodes.parquet column, a11ydebt per-episode sum)
+    ("n_observations", "screens"),
+    ("n_elements", "n_nodes"),
+    *AC_SCREEN_FIELDS[1:],
+]
+
+
+def main_androidcontrol(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(description="Compare the AndroidControl run with AISSA.")
+    parser.add_argument("kaggle_out", type=Path)
+    parser.add_argument("reference_dir", type=Path)
+    parser.add_argument("--out", type=Path, help="also write the Markdown to this file")
+    args = parser.parse_args(argv)
+    ref_dir, out = args.reference_dir, args.kaggle_out
+
+    def load(name: str) -> dict:
+        return json.loads((ref_dir / name).read_text(encoding="utf-8"))
+
+    report, shard_ref = load("androidcontrol_parse_report.json"), load("androidcontrol_shards.json")
+    manuscript = load("manuscript_numbers.json")
+    overall, by_role = rq1_tables(manuscript, "androidcontrol_2024")
+    reviewer = manuscript["reports"]["ReviewerChecks"]
+    ref_apps = next(d["value"] for d in reviewer["descriptives"] if "apps identified" in d["label"])
+    ref_shard_rows = {
+        r[0]: r for r in next(t for t in reviewer["tables"] if t["name"] == "shards")["rows"]
+    }
+    totals = report["totals"]
+
+    screen_files = sorted(p for p in out.rglob("*.parquet") if p.parent.name == "screens")
+    ours = [row for f in screen_files for row in pq.read_table(f).to_pylist()]
+    markers = [
+        json.loads(p.read_text(encoding="utf-8"))
+        for p in sorted(out.rglob("*.json"))
+        if p.parent.name == "shards"
+    ]
+    run_summary = json.loads(next(out.rglob("run_summary.json")).read_text(encoding="utf-8"))
+
+    def total(col: str) -> int:
+        return sum(r[col] for r in ours)
+
+    episodes: dict[int, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for r in ours:
+        e = episodes[r["episode_id"]]
+        e["screens"] += 1
+        for _ref_col, col in AC_SCREEN_FIELDS:
+            e[col] += r[col]
+    apps = {r["app"] for r in ours if r["app"]}
+
+    lines: list[str] = []
+    all_ok = True
+
+    def check(label: str, theirs: object, mine: object) -> None:
+        nonlocal all_ok
+        ok = theirs == mine
+        all_ok &= ok
+        fmt = (lambda v: f"{v:,}") if isinstance(theirs, int) else str
+        lines.append(f"| {label} | {fmt(theirs)} | {fmt(mine)} | {'yes' if ok else '**NO**'} |")
+
+    lines += [
+        "**Corpus totals** (AISSA: androidcontrol_parse_report.json, RQ1 Table 1, ReviewerChecks)",
+        "",
+        "| Quantity | AISSA | a11ydebt | Match |",
+        "|---|---:|---:|:-:|",
+    ]
+    check("Shards parsed", len(report["shards_used"]), len(markers))
+    check("Episodes parsed", totals["episodes"], len(episodes))
+    check("Episodes failed", totals["failed"], run_summary["episode_failures"])
+    check("Truncated shards", len(report["truncated_shards"]), len(run_summary["truncated_shards"]))
+    check("Screens (observations)", shard_ref["screens"], len(ours))
+    check("Nodes (elements parsed)", totals["elements"], total("n_nodes"))
+    check("Included (visible, positive area)", totals["included"], total("n_included"))
+    nl, nll = total("needs_label_candidates"), total("needs_label_labelled")
+    il, ill = total("icon_like_candidates"), total("icon_like_labelled")
+    check("Needs label: candidates", totals["needs"], nl)
+    check("Needs label: labelled", totals["labelled"], nll)
+    check("Label coverage %", overall[4], pct(nll, nl))
+    check("Icon-like: candidates", totals["icons"], il)
+    check("Icon-like: labelled", totals["icons_labelled"], ill)
+    check("Icon-like coverage %", overall[6], pct(ill, il))
+    check("Apps identified from resource ids", ref_apps, len(apps))
+
+    lines += [
+        "",
+        "**Coverage by role, needs-label population** (AISSA: RQ1 Table 2, androidcontrol_2024)",
+        "",
+        "| Role | AISSA needs label | a11ydebt | AISSA labelled | a11ydebt "
+        "| AISSA cov. % | a11ydebt | Match |",
+        "|---|---:|---:|---:|---:|---:|---:|:-:|",
+    ]
+    for role in sorted(by_role):
+        ref = by_role[role]
+        mine_n = total(f"needs_label_{role}_candidates")
+        mine_l = total(f"needs_label_{role}_labelled")
+        ref_n, ref_l, ref_cov = int(num(ref[3])), int(num(ref[4])), ref[5]
+        ok = (ref_n, ref_l, ref_cov) == (mine_n, mine_l, pct(mine_l, mine_n))
+        all_ok &= ok
+        lines.append(
+            f"| {role} | {ref_n:,} | {mine_n:,} | {ref_l:,} | {mine_l:,} | {ref_cov} "
+            f"| {pct(mine_l, mine_n)} | {'yes' if ok else '**NO**'} |"
+        )
+
+    lines += [
+        "",
+        "**Per-shard agreement** (AISSA: ReviewerChecks shards table and the episode table)",
+        "",
+        "| Shard | AISSA episodes | a11ydebt | AISSA needs label | a11ydebt | AISSA cov. % "
+        "| a11ydebt | Match |",
+        "|---|---:|---:|---:|---:|---:|---:|:-:|",
+    ]
+    by_shard: dict[str, list[dict]] = defaultdict(list)
+    for r in ours:
+        by_shard[r["shard"]].append(r)
+    for name in sorted(ref_shard_rows):
+        ref = ref_shard_rows[name]
+        rows = by_shard.get(name, [])
+        n_ep = len({r["episode_id"] for r in rows})
+        n_need = sum(r["needs_label_candidates"] for r in rows)
+        cov = pct(sum(r["needs_label_labelled"] for r in rows), n_need)
+        ok = (int(num(ref[1])), int(num(ref[2])), ref[3]) == (n_ep, n_need, cov)
+        all_ok &= ok
+        lines.append(
+            f"| {name} | {ref[1]} | {n_ep:,} | {ref[2]} | {n_need:,} | {ref[3]} | {cov} "
+            f"| {'yes' if ok else '**NO**'} |"
+        )
+
+    ref_episodes = pq.read_table(ref_dir / "androidcontrol_episodes.parquet").to_pylist()
+    lines += [
+        "",
+        "**Episode-by-episode agreement** (AISSA: androidcontrol_episodes.parquet)",
+        "",
+        "| Field | Episodes equal | Of | First mismatches |",
+        "|---|---:|---:|---|",
+    ]
+    for ref_col, col in AC_EPISODE_FIELDS:
+        equal, bad = 0, []
+        for e in ref_episodes:
+            mine = episodes.get(int(e["episode_id"]), {}).get(col)
+            if mine == e[ref_col]:
+                equal += 1
+            elif len(bad) < 3:
+                bad.append(f"{e['episode_id']}: {e[ref_col]} vs {mine}")
+        all_ok &= equal == len(ref_episodes)
+        lines.append(f"| {ref_col} | {equal:,} | {len(ref_episodes):,} | {'; '.join(bad) or '-'} |")
+    extra = sorted(set(episodes) - {int(e["episode_id"]) for e in ref_episodes})
+    all_ok &= not extra
+    lines.append(
+        f"| episodes only in a11ydebt | {len(extra):,} | "
+        f"| {', '.join(map(str, extra[:3])) or '-'} |"
+    )
+
+    ref_screens = pq.read_table(ref_dir / "androidcontrol_screens.parquet").to_pylist()
+    ours_by_screen = {r["screen_id"]: r for r in ours}
+    lines += [
+        "",
+        "**Screen-by-screen agreement** (AISSA: per-screen counts derived from its node table)",
+        "",
+        "| Field | Screens equal | Of | First mismatches |",
+        "|---|---:|---:|---|",
+    ]
+    for ref_col, col in AC_SCREEN_FIELDS:
+        equal, bad = 0, []
+        for s in ref_screens:
+            mine = ours_by_screen.get(s["screen_uid"], {}).get(col)
+            if mine == s[ref_col]:
+                equal += 1
+            elif len(bad) < 3:
+                bad.append(f"{s['screen_uid']}: {s[ref_col]} vs {mine}")
+        all_ok &= equal == len(ref_screens)
+        lines.append(f"| {ref_col} | {equal:,} | {len(ref_screens):,} | {'; '.join(bad) or '-'} |")
+    ref_ids = {s["screen_uid"] for s in ref_screens}
+    empty = [r for r in ours if r["screen_id"] not in ref_ids]
+    expected_empty = shard_ref["screens"] - len(ref_screens)
+    ok = len(empty) == expected_empty and all(r["n_nodes"] == 0 for r in empty)
+    all_ok &= ok
+    lines.append(
+        f"| screens with no nodes (absent from AISSA's node table) | {len(empty):,} "
+        f"| {expected_empty:,} "
+        f"| {'all empty' if ok else '**NOT ALL EMPTY**'} |"
+    )
+
+    ii, iil = total("interactive_image_candidates"), total("interactive_image_labelled")
+    with_debt = sum(
+        1 for r in ours if r["interactive_image_candidates"] > r["interactive_image_labelled"]
+    )
+    lines += [
+        "",
+        "**New in a11ydebt (no AISSA counterpart): P01 interactive_image population**",
+        "",
+        f"- Candidates {ii:,}, labelled {iil:,}, coverage {pct(iil, ii)}%, "
+        "screens with at least one "
+        f"unlabelled candidate {with_debt:,} of {len(ours):,}",
+        "",
+        f"Run: {run_summary.get('status')}, {len(markers)} shards, "
+        f"{run_summary.get('elapsed_seconds')} s, "
+        f"{run_summary.get('output_bytes', 0) / 1e6:.1f} MB output, a11ydebt "
+        f"{run_summary.get('build', {}).get('a11ydebt_commit', '?')}, "
+        f"pyarrow {run_summary.get('pyarrow')}, "
+        f"Python {run_summary.get('python')}",
+        "",
+        "**Verdict: "
+        + ("all AISSA quantities reproduced exactly" if all_ok else "MISMATCHES FOUND")
+        + "**",
+    ]
+    text = "\n".join(lines)
+    print(text)
+    if args.out:
+        args.out.write_text(text + "\n", encoding="utf-8")
+    return 0 if all_ok else 1
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = list(sys.argv[1:] if argv is None else argv)
+    if args and args[0] == "androidcontrol":
+        return main_androidcontrol(args[1:])
+    if args and args[0] == "rico":
+        args = args[1:]
+    return main_rico(args)
 
 
 if __name__ == "__main__":
