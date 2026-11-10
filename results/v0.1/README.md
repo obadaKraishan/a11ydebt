@@ -41,4 +41,4 @@ The numbers are deterministic. Only the `generated` timestamp in `report.md` cha
 - **Code:** a11ydebt 0.1.0, generated on 2026-11-10 at commit `1e5c4c2`.
 - **Rico input:** the checksums are in [docs/reproduction-rico.md](../../docs/reproduction-rico.md).
 - **AndroidControl input:** each shard's bytes and checksum were verified on Kaggle (SHA-256 from AISSA for shards 00000 to 00009, MD5 from GCS for 00010 to 00019; see `kaggle/androidcontrol_parse/config_run*.json`).
-- **Human or LLM:** every number comes from deterministic parsing and a seeded bootstrap (`provenance: human_written` code; no LLM touched any data item).
+- **Human or LLM:** no language model produced, labelled or edited any number. Every value comes from deterministic parsing and a seeded bootstrap. (The code was written with Claude Code; see the AI-use disclosure in the README.)
