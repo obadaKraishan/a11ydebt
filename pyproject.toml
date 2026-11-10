@@ -4,30 +4,70 @@ build-backend = "hatchling.build"
 
 [project]
 name = "a11ydebt"
-version = "0.1.0.dev0"
+dynamic = ["version"]
 description = "Audit accessibility debt (missing content descriptions) in the GUI corpora that train computer-use agents."
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 requires-python = ">=3.10"
 authors = [{ name = "Obada Kraishan" }]
-keywords = ["accessibility", "gui-agents", "rico", "androidcontrol", "content-description", "dataset-audit"]
+keywords = [
+    "accessibility",
+    "gui-agents",
+    "computer-use-agents",
+    "datasets",
+    "audit",
+    "content-description",
+    "rico",
+    "androidcontrol",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
+    "Environment :: Console",
     "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Information Analysis",
 ]
 dependencies = [
     "numpy>=1.26",
     "pydantic>=2.6",
 ]
 
+[project.urls]
+Homepage = "https://github.com/obadaKraishan/a11ydebt"
+Repository = "https://github.com/obadaKraishan/a11ydebt"
+Issues = "https://github.com/obadaKraishan/a11ydebt/issues"
+Documentation = "https://github.com/obadaKraishan/a11ydebt#readme"
+Changelog = "https://github.com/obadaKraishan/a11ydebt/blob/main/CHANGELOG.md"
+
 [project.scripts]
 a11ydebt = "a11ydebt.cli:main"
 
+[tool.hatch.version]
+path = "src/a11ydebt/__init__.py"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/a11ydebt"]
+
+# The sdist carries what is needed to build and test the package: no data, no planning notes.
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+    "/NOTICE",
+    "/CHANGELOG.md",
+    "/CITATION.cff",
+]
 
 [tool.ruff]
 line-length = 100

@@ -48,6 +48,12 @@ def test_missing_data_is_a_clear_error(tmp_path, capsys):
     assert "no screen JSON files" in capsys.readouterr().err
 
 
+def test_package_metadata_version_is_the_module_version():
+    from importlib.metadata import version
+
+    assert version("a11ydebt") == __version__  # pyproject reads it from a11ydebt/__init__.py
+
+
 def test_version(capsys):
     with pytest.raises(SystemExit) as exit_info:
         main(["--version"])
