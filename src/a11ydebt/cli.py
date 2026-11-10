@@ -2,12 +2,14 @@
 
     a11ydebt audit rico PATH [--limit N] [--workers N] [--out DIR] [--quiet]
     a11ydebt audit androidcontrol SHARD [SHARD ...] [--splits splits.json] [--out DIR] [--quiet]
+    a11ydebt summarize androidcontrol KAGGLE_OUTPUT_DIR [--out DIR]
 
 For Rico, PATH is a folder holding ``combined/*.json`` (or the JSON files directly) and, ideally,
 ``ui_details.csv`` for app names. For AndroidControl, each SHARD is a GZIP TFRecord file such as
 ``android_control-00000-of-00020``. The corpus table goes to stdout. With ``--out``, it also
 writes ``screens.csv``, ``apps.csv`` and ``summary.json``. The full AndroidControl corpus (about
-47 GB) is parsed on Kaggle instead; see ``kaggle/androidcontrol_parse/``.
+47 GB) is parsed on Kaggle instead (``kaggle/androidcontrol_parse/``); ``summarize androidcontrol``
+turns the pulled kernel outputs into the same tables (it needs pyarrow).
 """
 
 from __future__ import annotations
@@ -172,6 +174,21 @@ def _audit_androidcontrol(args: argparse.Namespace) -> int:
     return 0
 
 
+def _summarize_androidcontrol(args: argparse.Namespace) -> int:
+    from a11ydebt.kaggle_outputs import read_androidcontrol_outputs
+
+    try:
+        report = read_androidcontrol_outputs(args.path)
+    except (FileNotFoundError, ImportError) as exc:
+        print(f"a11ydebt: {exc}", file=sys.stderr)
+        return 2
+    print(format_summary(report))
+    if args.out:
+        for path in write_outputs(report, args.out, source=str(args.path)):
+            print(f"wrote {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="a11ydebt", description="Audit accessibility debt in GUI-agent corpora."
@@ -197,6 +214,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     ac.add_argument("--out", type=Path, help="write screens.csv, apps.csv and summary.json here")
     ac.add_argument("--quiet", action="store_true", help="no progress lines on stderr")
+    summarize = commands.add_parser(
+        "summarize", help="build the tables from a Kaggle kernel's outputs"
+    )
+    s_corpora = summarize.add_subparsers(dest="corpus", required=True)
+    s_ac = s_corpora.add_parser(
+        "androidcontrol", help="outputs of kaggle/androidcontrol_parse (needs pyarrow)"
+    )
+    s_ac.add_argument("path", type=Path, help="the folder `kaggle kernels output` wrote")
+    s_ac.add_argument("--out", type=Path, help="write screens.csv, apps.csv and summary.json here")
     return parser
 
 
@@ -206,6 +232,8 @@ def main(argv: list[str] | None = None) -> int:
         return _audit_rico(args)
     if args.command == "audit" and args.corpus == "androidcontrol":
         return _audit_androidcontrol(args)
+    if args.command == "summarize" and args.corpus == "androidcontrol":
+        return _summarize_androidcontrol(args)
     return 2  # pragma: no cover - argparse enforces the choices above
 
 

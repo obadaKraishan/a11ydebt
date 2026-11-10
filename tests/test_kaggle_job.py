@@ -163,3 +163,32 @@ def test_built_kernel_metadata_and_local_run(config, tmp_path):
     assert (
         tmp_path / "ksrc" / "a11ydebt" / "androidcontrol.py"
     ).is_file()  # the bundle, not the venv
+
+
+def test_summarize_reads_the_kernel_outputs(config, tmp_path, capsys):
+    from a11ydebt.cli import main
+
+    out = tmp_path / "out"
+    job.run(config, out, tmp_path / "work")
+    capsys.readouterr()
+    assert main(["summarize", "androidcontrol", str(out), "--out", str(tmp_path / "tables")]) == 0
+    printed = capsys.readouterr().out
+    assert "androidcontrol: 3 screens, 2 apps, 10 nodes (8 included" in printed
+    summary = json.loads((tmp_path / "tables" / "summary.json").read_text(encoding="utf-8"))
+    pops = {
+        p: (c["candidates"], c["labelled"]) for p, c in summary["corpus"]["populations"].items()
+    }
+    assert pops == {"needs_label": (6, 2), "icon_like": (2, 1), "interactive_image": (2, 0)}
+    roles = {
+        r: (c["candidates"], c["labelled"])
+        for r, c in summary["corpus"]["needs_label_by_role"].items()
+    }
+    assert roles == {"button": (2, 1), "image": (2, 1), "input": (1, 0), "other": (1, 0)}
+    assert summary["failures"] == []
+
+
+def test_summarize_reports_missing_outputs(tmp_path, capsys):
+    from a11ydebt.cli import main
+
+    assert main(["summarize", "androidcontrol", str(tmp_path)]) == 2
+    assert "no screens/*.parquet" in capsys.readouterr().err
