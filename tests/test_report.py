@@ -107,6 +107,9 @@ def test_write_report_files(ac_audit, tmp_path):
     assert rows[0]["n_resamples"] == "200" and rows[0]["seed"] == "20260908"
     assert rows[2]["coverage"] == "" and rows[2]["app_ci_low"] == ""
     assert format_markdown([report]).startswith("# a11ydebt coverage report")
+    assert "seeded with the seed.[^seeds]" in md
+    assert md.rstrip().endswith("docs/reproduction-bootstrap.md).")
+    assert md.count("[^seeds]: Intervals use independent seeds.") == 1
 
 
 def test_mismatched_files_are_refused(ac_audit):
