@@ -17,6 +17,11 @@ https://github.com/obadaKraishan/accessibility-debt-agents
   - src/a11ydebt/androidcontrol.py: the AndroidControl episode parse logic and the episode-app
     rule (from phase2_processing/02_parse_androidcontrol.py and src/a11ydebt/apps.py, with the
     platform-package list from config.yaml)
+  - src/a11ydebt/bootstrap.py: the cluster bootstrap of a pooled rate and its percentile
+    interval, and the cluster rules (from cluster_bootstrap_rate, pct_ci and Check 1 of
+    phase4_validation/03_reviewer_checks.py), the Wilson interval (from src/a11ydebt/stats.py),
+    and the seed and resample count (from config.yaml). AISSA's own src/a11ydebt/bootstrap.py
+    is an import shim and was not ported.
 
 That code was released under the MIT License:
 
