@@ -1,0 +1,32 @@
+# Data is never committed. Rico's research-use terms forbid redistributing raw files;
+# data/raw/rico is a symlink to /Volumes/Kraishan/research-data/a11ydebt/raw/rico.
+data/
+
+# Secrets
+*.env
+.env
+.env.*
+!.env.example
+kaggle.json
+access_token
+secrets/
+
+# Publishing gate: created by Obada only, never committed
+RELEASE_APPROVED
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+.coverage
+htmlcov/
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/
