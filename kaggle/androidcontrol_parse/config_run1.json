@@ -1,0 +1,75 @@
+{
+  "name": "run1",
+  "description": "AISSA's 10 shards (00000-00009), to reproduce the AISSA 2026 AndroidControl numbers",
+  "kernel_id": "obadakraishan/a11ydebt-androidcontrol-run1",
+  "kernel_title": "a11ydebt androidcontrol run1",
+  "time_budget_s": 39600,
+  "first_shard_estimate_s": 1800,
+  "splits_json": {
+    "url": "https://storage.googleapis.com/gresearch/android_control/splits.json",
+    "bytes": 98603,
+    "sha256": "aa0943b0b4eb354796f3daf4a6e36836918c71254db2d4060b45ae98213ad2b6"
+  },
+  "shards": [
+    {
+      "name": "android_control-00000-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00000-of-00020",
+      "bytes": 2492987829,
+      "sha256": "f10735f88e6e4b607fef1b1748ca3fc9c1b8e223be5a22ec1c18d78b12ed343b"
+    },
+    {
+      "name": "android_control-00001-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00001-of-00020",
+      "bytes": 2381590403,
+      "sha256": "91dddfaf3dcb7da568135acb3e13631934fc578bb437d19efc5cc0b2e55ed9eb"
+    },
+    {
+      "name": "android_control-00002-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00002-of-00020",
+      "bytes": 2524501320,
+      "sha256": "d2ccae3d5547290d73377a1f80a532fb11c5c091166152c68559ee2855a0d994"
+    },
+    {
+      "name": "android_control-00003-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00003-of-00020",
+      "bytes": 2521787571,
+      "sha256": "94766b9910568dd6047fc49a94dcd623ab85f3ce794152458459af3daef6c05f"
+    },
+    {
+      "name": "android_control-00004-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00004-of-00020",
+      "bytes": 2492154967,
+      "sha256": "0bc6b0edd38aa17abb1f879aff56fa58257ea93a6e5ac7c9fa16d74722d646ba"
+    },
+    {
+      "name": "android_control-00005-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00005-of-00020",
+      "bytes": 2494079253,
+      "sha256": "a5d78d036bbdbca6782be22aee5c391ba964107524bd5f0c902bef09afd053d3"
+    },
+    {
+      "name": "android_control-00006-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00006-of-00020",
+      "bytes": 2581962545,
+      "sha256": "ef427af1ef6b217b61d4e24def4ed7f7ee2f1146b87d161ea262b74b19537246"
+    },
+    {
+      "name": "android_control-00007-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00007-of-00020",
+      "bytes": 2676941243,
+      "sha256": "66abd515ebb32c74da5c5cfe5eed3a17868cc072e321bed63d5f6014fe9d3250"
+    },
+    {
+      "name": "android_control-00008-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00008-of-00020",
+      "bytes": 2483337369,
+      "sha256": "c237e32c40a88d4517323174572882353e53bf3007247a205a9a809be65342ff"
+    },
+    {
+      "name": "android_control-00009-of-00020",
+      "url": "https://storage.googleapis.com/gresearch/android_control/android_control-00009-of-00020",
+      "bytes": 2630264084,
+      "sha256": "24872ff6a2424b8f2b77d2889911a741efa5deb7ba1a327530d1cdb2dfc45602"
+    }
+  ]
+}

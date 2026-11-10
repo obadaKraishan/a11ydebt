@@ -126,8 +126,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     pq.write_table(screens, out / "androidcontrol_screens.parquet", compression="zstd")
 
+    n_screens = reference["screens"]
     print(
-        f"shards: {len(shards)}, episodes: {len(episodes):,}, screens (observations): {reference['screens']:,}"
+        f"shards: {len(shards)}, episodes: {len(episodes):,}, screens (observations): {n_screens:,}"
     )
     print(f"screens with at least one node in AISSA's node table: {screens.num_rows:,}")
     print(f"node rows aggregated: {nodes.num_rows:,}")
