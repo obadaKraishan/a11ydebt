@@ -1,0 +1,16 @@
+corpus,dataset,role,candidates,labelled,coverage
+Rico,rico,button,76461,34619,0.452767
+Rico,rico,image,302202,29063,0.096171
+Rico,rico,input,29416,646,0.021961
+Rico,rico,other,92964,24755,0.266286
+Rico,rico,text,1542,63,0.040856
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,button,108037,78066,0.722586
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,image,1203560,703149,0.584224
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,input,24402,6640,0.272109
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,other,119895,46654,0.389124
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,text,6650,3027,0.455188
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,button,218529,156460,0.715969
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,image,2383470,1389033,0.582778
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,input,49004,13090,0.267121
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,other,230038,89759,0.390192
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,text,13144,6478,0.492848

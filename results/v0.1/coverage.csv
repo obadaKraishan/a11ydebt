@@ -1,0 +1,10 @@
+corpus,dataset,population,candidates,labelled,coverage,wilson_low,wilson_high,app_clusters,app_ci_low,app_ci_high,screen_clusters,screen_ci_low,screen_ci_high,n_resamples,seed,conf
+Rico,rico,needs_label,502585,89146,0.177375,0.176321,0.178434,8904,0.171244,0.183668,60637,0.174929,0.179812,5000,20260908,0.95
+Rico,rico,icon_like,127552,42341,0.331951,0.329372,0.334540,7332,0.319637,0.344696,42990,0.326824,0.336838,5000,20260908,0.95
+Rico,rico,interactive_image,105780,35217,0.332927,0.330093,0.335773,6775,0.319678,0.346627,38925,0.327576,0.338378,5000,20260908,0.95
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,needs_label,1462544,837536,0.572657,0.571855,0.573458,951,0.556603,0.588421,49745,0.569920,0.575349,5000,20260908,0.95
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,icon_like,194529,122074,0.627536,0.625385,0.629682,926,0.577632,0.673857,39955,0.622024,0.632966,5000,20260908,0.95
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,interactive_image,133266,78469,0.588815,0.586171,0.591454,905,0.535044,0.641477,36429,0.582463,0.595087,5000,20260908,0.95
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,needs_label,2894185,1654820,0.571774,0.571204,0.572344,1254,0.556930,0.586485,98848,0.569846,0.573745,5000,20260908,0.95
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,icon_like,390697,243562,0.623404,0.621883,0.624922,1225,0.570673,0.670338,79658,0.619453,0.627381,5000,20260908,0.95
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,interactive_image,266281,156403,0.587361,0.585490,0.589229,1191,0.532032,0.640482,72557,0.583024,0.591774,5000,20260908,0.95

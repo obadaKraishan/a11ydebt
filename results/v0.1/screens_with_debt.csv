@@ -1,0 +1,10 @@
+corpus,dataset,population,screens,screens_with_candidates,screens_with_debt,share_of_screens,share_of_screens_with_candidates
+Rico,rico,needs_label,66261,60637,56941,0.859344,0.939047
+Rico,rico,icon_like,66261,42990,25949,0.391618,0.603605
+Rico,rico,interactive_image,66261,38925,23048,0.347837,0.592113
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,needs_label,49892,49745,49692,0.995991,0.998935
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,icon_like,49892,39955,20779,0.416480,0.520060
+"AndroidControl, 10 shards (the paper's sample)",androidcontrol,interactive_image,49892,36429,15569,0.312054,0.427379
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,needs_label,99131,98848,98710,0.995753,0.998604
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,icon_like,99131,79658,41572,0.419364,0.521881
+"AndroidControl, all 20 shards (robustness extension, not in the paper)",androidcontrol,interactive_image,99131,72557,31027,0.312990,0.427622
