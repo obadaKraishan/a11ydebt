@@ -2,7 +2,8 @@
 
 ``coverage()`` turns parsed screens into counts and proportions for every population in
 :data:`a11ydebt.counts.POPULATIONS`. ``audit_rico()`` runs the whole pipeline over a Rico folder,
-optionally in parallel, and records unreadable files instead of stopping.
+optionally in parallel, and ``audit_androidcontrol()`` over AndroidControl TFRecord shards. Both
+record unreadable inputs instead of stopping.
 
 Proportions are pooled: an app's coverage is labelled / candidates over all of its screens,
 which is how the AISSA paper reports corpus coverage. Bootstrap intervals clustered by app
@@ -12,12 +13,13 @@ arrive in S3.
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Mapping
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, computed_field
 
+from a11ydebt.androidcontrol import ShardReader
 from a11ydebt.counts import POPULATIONS, ScreenLike, count_screen
 from a11ydebt.rico import find_screen_files, load_screen, read_ui_details
 
@@ -28,6 +30,7 @@ __all__ = [
     "CoverageReport",
     "ParseFailure",
     "ScreenCoverage",
+    "audit_androidcontrol",
     "audit_rico",
     "coverage",
     "screen_coverage",
@@ -229,3 +232,40 @@ def audit_rico(
     screens = [r for r in results if isinstance(r, ScreenCoverage)]
     failures = [r for r in results if isinstance(r, ParseFailure)]
     return coverage(screens, dataset="rico", failures=failures)
+
+
+def audit_androidcontrol(
+    shards: Iterable[str | Path],
+    *,
+    splits: Mapping[int, str] | None = None,
+    progress: Callable[[int, int], None] | None = None,
+) -> CoverageReport:
+    """Parse AndroidControl shards (GZIP TFRecords) and return the coverage report.
+
+    Undecodable episodes and truncated shards are listed in ``report.failures``; a truncated
+    shard still contributes every episode read before the cut.
+    """
+    paths = [Path(p) for p in shards]
+    screens: list[ScreenCoverage] = []
+    failures: list[ParseFailure] = []
+    for done, path in enumerate(paths, start=1):
+        reader = ShardReader(path, splits)
+        for episode in reader:
+            screens.extend(screen_coverage(screen) for screen in episode.screens)
+        failures.extend(
+            ParseFailure(
+                screen_id=f"{reader.shard}#record{f['record']}", path=str(path), error=f["error"]
+            )
+            for f in reader.failures
+        )
+        if reader.truncated:
+            failures.append(
+                ParseFailure(
+                    screen_id=f"{reader.shard}#truncated",
+                    path=str(path),
+                    error=f"TruncatedShard: ended mid-record after {reader.records:,} records",
+                )
+            )
+        if progress:
+            progress(done, len(paths))
+    return coverage(screens, dataset="androidcontrol", failures=failures)

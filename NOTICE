@@ -9,7 +9,14 @@ Computer-Use Agents" (Kraishan and Jitkajornwanich, IEEE AISSA 2026):
 https://github.com/obadaKraishan/accessibility-debt-agents
 (commit 97c0378; the codebook is byte-identical in the camera-ready snapshot 567e030).
 
-  Ported: src/a11ydebt/taxonomy.py (element roles, label status, the inclusion rule).
+  Ported files:
+  - src/a11ydebt/taxonomy.py: element roles, label status and the inclusion rule
+    (from src/a11ydebt/taxonomy.py)
+  - src/a11ydebt/tfrecord.py: the pure-Python TFRecord, tf.train.Example and
+    AndroidAccessibilityForest readers, and click resolution (from src/a11ydebt/tfrecord.py)
+  - src/a11ydebt/androidcontrol.py: the AndroidControl episode parse logic and the episode-app
+    rule (from phase2_processing/02_parse_androidcontrol.py and src/a11ydebt/apps.py, with the
+    platform-package list from config.yaml)
 
 That code was released under the MIT License:
 

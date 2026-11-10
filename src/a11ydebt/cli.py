@@ -1,10 +1,13 @@
 """Command line interface.
 
     a11ydebt audit rico PATH [--limit N] [--workers N] [--out DIR] [--quiet]
+    a11ydebt audit androidcontrol SHARD [SHARD ...] [--splits splits.json] [--out DIR] [--quiet]
 
-PATH is a Rico folder holding ``combined/*.json`` (or the JSON files directly) and, ideally,
-``ui_details.csv`` for app names. The corpus table goes to stdout. With ``--out``, it also
-writes ``screens.csv``, ``apps.csv`` and ``summary.json``. AndroidControl arrives in S2.
+For Rico, PATH is a folder holding ``combined/*.json`` (or the JSON files directly) and, ideally,
+``ui_details.csv`` for app names. For AndroidControl, each SHARD is a GZIP TFRecord file such as
+``android_control-00000-of-00020``. The corpus table goes to stdout. With ``--out``, it also
+writes ``screens.csv``, ``apps.csv`` and ``summary.json``. The full AndroidControl corpus (about
+47 GB) is parsed on Kaggle instead; see ``kaggle/androidcontrol_parse/``.
 """
 
 from __future__ import annotations
@@ -18,7 +21,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from a11ydebt import __version__
-from a11ydebt.coverage import Counts, CoverageReport, audit_rico
+from a11ydebt.androidcontrol import load_splits
+from a11ydebt.coverage import Counts, CoverageReport, audit_androidcontrol, audit_rico
 from a11ydebt.rico import find_screen_files
 
 __all__ = ["format_summary", "main", "write_outputs"]
@@ -144,6 +148,30 @@ def _audit_rico(args: argparse.Namespace) -> int:
     return 0
 
 
+def _audit_androidcontrol(args: argparse.Namespace) -> int:
+    missing = [p for p in args.shards if not p.is_file()]
+    if missing:
+        print(f"a11ydebt: shard file(s) not found: {', '.join(map(str, missing))}", file=sys.stderr)
+        return 2
+    splits = load_splits(args.splits) if args.splits else None
+
+    def shard_progress(done: int, total: int) -> None:
+        print(f"  parsed {done}/{total} shards", file=sys.stderr, flush=True)
+
+    started = time.perf_counter()
+    report = audit_androidcontrol(
+        args.shards, splits=splits, progress=None if args.quiet else shard_progress
+    )
+    elapsed = time.perf_counter() - started
+    print(format_summary(report))
+    print(f"\n{elapsed:.1f}s")
+    if args.out:
+        source = " ".join(str(p) for p in args.shards)
+        for path in write_outputs(report, args.out, source=source, elapsed=elapsed):
+            print(f"wrote {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="a11ydebt", description="Audit accessibility debt in GUI-agent corpora."
@@ -160,6 +188,15 @@ def build_parser() -> argparse.ArgumentParser:
     rico.add_argument("--workers", type=int, default=1, help="parallel processes (default 1)")
     rico.add_argument("--out", type=Path, help="write screens.csv, apps.csv and summary.json here")
     rico.add_argument("--quiet", action="store_true", help="no progress lines on stderr")
+    ac = corpora.add_parser("androidcontrol", help="AndroidControl GZIP TFRecord shards")
+    ac.add_argument(
+        "shards", type=Path, nargs="+", help="shard files, e.g. android_control-00000-of-00020"
+    )
+    ac.add_argument(
+        "--splits", type=Path, help="splits.json, to label episodes train/validation/test"
+    )
+    ac.add_argument("--out", type=Path, help="write screens.csv, apps.csv and summary.json here")
+    ac.add_argument("--quiet", action="store_true", help="no progress lines on stderr")
     return parser
 
 
@@ -167,6 +204,8 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "audit" and args.corpus == "rico":
         return _audit_rico(args)
+    if args.command == "audit" and args.corpus == "androidcontrol":
+        return _audit_androidcontrol(args)
     return 2  # pragma: no cover - argparse enforces the choices above
 
 
