@@ -6,6 +6,9 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.1.0] - Unreleased
+The first version, prepared but not yet tagged or published. See `docs/release-checklist.md`.
+
 ### Added
 - Package skeleton: a uv project on Python 3.12 (supports >=3.10), hatchling build, pydantic,
   and ruff and pytest for development. Apache-2.0 `LICENSE` and a `NOTICE` for the ported AISSA
@@ -54,6 +57,20 @@ All notable changes to this project are recorded here. The format follows
   - `docs/reproduction-bootstrap.md`, and an all-20 section in
     `docs/reproduction-androidcontrol.md`.
 - numpy (>=1.26) is now a runtime dependency, for the bootstrap.
+- S4, packaging and release prep:
+  - CI (`.github/workflows/ci.yml`) runs ruff check, ruff format --check and pytest with coverage
+    on Python 3.10 to 3.13, mirroring reliacode. pytest-cov is a dev dependency.
+  - Package metadata: version 0.1.0, read from `a11ydebt/__init__.py`, plus keywords,
+    classifiers and project URLs. The sdist holds src, tests, the Kaggle kernel and the top-level
+    docs.
+  - `CITATION.cff` (validated with cffconvert 2.0.0) is the software entry, with the AISSA 2026
+    paper as preferred-citation. `.zenodo.json` is prepared but not used yet. Both carry marked
+    DOI placeholders. `tests/test_release_metadata.py` keeps their versions in step.
+  - `results/v0.1/`: the aggregate report tables for Rico, AndroidControl 10 shards and
+    AndroidControl all 20 shards (a robustness extension, not in the paper).
+  - Docs: `docs/data-card.md`, `docs/how-to-audit.md` (a two-page handout),
+    `docs/release-checklist.md`, and `docs/assets/qr-a11ydebt.png` (made with segno through uvx).
+  - `report.md` ends with a footnote on independent seeds (decision D1).
 
 ### Fixed
 - `CorpusCoverage.n_apps` no longer counts screens without an identified app as an app.
@@ -61,6 +78,10 @@ All notable changes to this project are recorded here. The format follows
   per-shard counts.
 
 ### Changed
+- The README is rewritten for first-time visitors: install, quickstarts, the results table, how
+  to cite, provenance, and the AI-use disclosure.
+- `tests/test_bootstrap.py`: the Wilson zero-bound test allows for libm rounding (Linux gives
+  about 3e-17).
 - `coverage()` and `screen_coverage()` accept any screen that follows `counts.ScreenLike`, so they
   work for both corpora. `POPULATIONS` moved to `a11ydebt.counts` and is re-exported from
   `a11ydebt.rico`.

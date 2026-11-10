@@ -79,3 +79,24 @@ Five lines per session: did / decided / next / open questions / usage notes.
   - Paper status and blind-review rules, before the repo goes public.
 - **Usage notes:** Kaggle did run 2 (2,028 s of CPU). Local work was the code, a 6-minute Rico
   re-audit and an 11-second report. There were no model calls.
+
+## 2026-11-10 · S4 packaging and release prep (prompt P05, report R05, both in a11ydebt/)
+- **Did:**
+  - CI on Python 3.10 to 3.13 is green.
+  - Version 0.1.0 with full metadata; the wheel and sdist build, install and run cleanly (the
+    sdist passes all tests on its own).
+  - README rewrite; CITATION.cff (valid) and .zenodo.json with marked placeholders.
+  - New docs: data card, results/v0.1 aggregates, the two-page how-to, the QR code and the
+    release checklist.
+- **Decided (Obada, R04):**
+  - D1: per-interval seeds plus a footnote. D2: all 20 shards shown only as a robustness
+    extension.
+  - D3: numpy is a hard dependency. D4: no release in S4.
+  - Also: DOI placeholders are comments (CFF) or an invalid string (Zenodo), never fake DOIs.
+- **Next:** Obada runs `docs/release-checklist.md` once `RELEASE_APPROVED` exists. After AISSA:
+  v0.2 (issue #1, Rico tar.gz streaming), then S5 (the RICO-Semantics join).
+- **Open questions:**
+  - Should prompts/, reports/ and the local paths stay in the public history?
+  - Is the PyPI name available?
+  - Confirm the AI-use wording for this repo's workflow.
+- **Usage notes:** no model calls and no Kaggle use. CI and local matrix runs took seconds each.
