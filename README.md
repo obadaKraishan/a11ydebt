@@ -151,10 +151,8 @@ cluster bootstrap are ported from the MIT-licensed AISSA pipeline (accessibility
 terms ([docs/licenses.md](docs/licenses.md)).
 
 ## AI-use disclosure
-a11ydebt is developed with [Claude Code](https://claude.com/claude-code), Anthropic's AI coding
-assistant. Claude Code drafts code, tests and documentation. The author, Obada Kraishan, reviews
-every change before it is committed and is responsible for the package's design, its statistical
-choices and its correctness. Commits made with Claude Code carry a `Co-Authored-By: Claude`
-trailer, so the history shows which changes were AI-assisted. No language model produces any
-number in the audit: the counts come from deterministic parsing, and the intervals from a seeded
-bootstrap.
+a11ydebt is developed with [Claude Code](https://claude.com/claude-code), an AI coding assistant.
+The author directs the work, reviews the changes, and is responsible for the code and its
+correctness. Commits made with Claude Code carry a `Co-Authored-By: Claude` trailer, so the
+history shows which changes were AI-assisted. No language model produces any number in the
+audit: the counts come from deterministic parsing, and the intervals from a seeded bootstrap.
