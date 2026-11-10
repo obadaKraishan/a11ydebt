@@ -1,69 +1,160 @@
 # a11ydebt
 
-**Audit the accessibility debt in GUI-agent training corpora.** a11ydebt measures how many UI
-elements that need a screen-reader label (an Android `content-desc`) actually have one, in the
-corpora that computer-use agents are trained and evaluated on. It is the reproducible CLI behind
-the IEEE AISSA 2026 paper *Trained on What Screen Readers Cannot Read: Accessibility Debt in the
-GUI Corpora Behind Computer-Use Agents* (Kraishan and Jitkajornwanich).
+[![CI](https://github.com/obadaKraishan/a11ydebt/actions/workflows/ci.yml/badge.svg)](https://github.com/obadaKraishan/a11ydebt/actions/workflows/ci.yml)
 
-> Status: pre-release (`0.1.0.dev0`), private. v0.1 targets Rico and AndroidControl.
+**Measure the accessibility debt in the GUI corpora behind computer-use agents.** Agents that
+operate phones learn from large corpora of recorded screens. A screen reader can only announce a
+button or an icon if the app gave it a label (an Android `content-desc`), and many apps don't.
+a11ydebt counts, for every element that needs a label, whether it has one. It reports the
+coverage per screen, per app and per corpus, with app-level cluster-bootstrap confidence
+intervals. It is the reproducible tool behind the IEEE AISSA 2026 paper *Trained on What Screen
+Readers Cannot Read: Accessibility Debt in the GUI Corpora Behind Computer-Use Agents*
+(Kraishan and Jitkajornwanich). From the raw data, it reproduces the paper's corpus coverage
+numbers (overall and by role) and its cluster-bootstrap intervals exactly.
 
-## Quick start (development)
+> Version 0.1.0, not yet released. It supports Rico and AndroidControl, and needs Python 3.10 or
+> later.
+
+## Install
+From GitHub, for now (a PyPI release will follow):
 ```bash
-uv sync                      # Python 3.10+; installs pydantic and numpy, plus ruff and pytest for dev
-uv run pytest                # tests use tiny synthetic fixtures, no data needed
+pipx install "git+https://github.com/obadaKraishan/a11ydebt.git"
+# or
+uv tool install "git+https://github.com/obadaKraishan/a11ydebt.git"
 ```
+The runtime dependencies are pydantic and numpy. `a11ydebt summarize`, which reads the Kaggle
+kernel's Parquet outputs, also needs pyarrow: `pipx inject a11ydebt pyarrow`, or
+`uv tool install --with pyarrow ...`.
 
-## Usage
-There are three steps: audit a corpus, then (for AndroidControl on Kaggle) summarize, then report.
+## Quickstart: Rico
+1. Download Rico from <https://interactionmining.org/rico>, under its research-use terms. You
+   need *UI Screenshots and View Hierarchies* (`unique_uis.tar.gz`, 6.5 GB) and the UI metadata
+   file `ui_details.csv`. Unpack the archive (about 16 GB) to get `combined/*.json`, and put
+   `ui_details.csv` next to `combined/`. The checksums are in
+   [docs/reproduction-rico.md](docs/reproduction-rico.md).
+2. Audit and report:
+   ```bash
+   a11ydebt audit rico path/to/rico --workers 8 --out audit_rico   # about 6 minutes on 8 cores
+   a11ydebt report "Rico=audit_rico" --out report
+   ```
+   `audit` writes `screens.csv`, `apps.csv` and `summary.json`. `report` writes `report.md`,
+   `coverage.csv`, `roles.csv` and `screens_with_debt.csv`.
 
-```bash
-# 1. Audit: per-screen and per-app counts, written as screens.csv, apps.csv and summary.json
-uv run a11ydebt audit rico data/raw/rico --workers 8 --out data/interim/audit_rico
-uv run a11ydebt audit androidcontrol android_control-00000-of-00020 --splits splits.json \
-    --out data/interim/audit_androidcontrol
+## Quickstart: AndroidControl
+AndroidControl (Apache-2.0) is 20 GZIP TFRecord shards, about 50 GB in all, at
+`https://storage.googleapis.com/gresearch/android_control/`.
 
-# 2. The full AndroidControl corpus (about 50 GB) is parsed on Kaggle instead
-#    (kaggle/androidcontrol_parse/); summarize turns the pulled outputs into the same tables
-uv run a11ydebt summarize androidcontrol data/interim/androidcontrol \
-    --out data/interim/audit_androidcontrol_all20
-
-# 3. Report: Markdown and CSV tables with 95% cluster-bootstrap intervals
-uv run a11ydebt report "Rico=data/interim/audit_rico" \
-    "AndroidControl=data/interim/audit_androidcontrol_all20" --out data/release/report
-```
-
-`a11ydebt report` takes one or more audit folders, each optionally named `LABEL=FOLDER`. It
-writes `report.md`, `coverage.csv`, `roles.csv` and `screens_with_debt.csv`. For each corpus the
-tables cover:
-- coverage for the three populations, with app-cluster and screen-cluster bootstrap intervals
-  (the CSV adds the element-level Wilson interval);
-- needs_label coverage by role;
-- screens with at least one unlabelled element.
-
-The defaults follow the AISSA paper: 5,000 resamples, seed 20260908, 95% intervals. Change them
-with `--n-resamples`, `--seed` and `--conf`. App clusters are apps. On AndroidControl, an episode
-with no identified app is its own cluster.
-
-Both corpora reproduce the AISSA 2026 numbers exactly, including the published cluster-bootstrap
-intervals (`docs/reproduction-rico.md`, `docs/reproduction-androidcontrol.md`,
-`docs/reproduction-bootstrap.md`).
-
-## Data
-a11ydebt ships **no data**. Download Rico yourself under its research-use terms
-(<https://interactionmining.org/rico>) and point the CLI at the folder that holds the
-view-hierarchy JSON files (`combined/*.json`) and `ui_details.csv`. See `docs/licenses.md`
-for what may and may not be redistributed.
+- **One shard, locally (2.5 GB):**
+  ```bash
+  curl -O https://storage.googleapis.com/gresearch/android_control/android_control-00000-of-00020
+  curl -O https://storage.googleapis.com/gresearch/android_control/splits.json
+  a11ydebt audit androidcontrol android_control-00000-of-00020 --splits splits.json --out audit_ac
+  ```
+- **The full corpus, on a free Kaggle CPU kernel** (from a clone of this repo, with the Kaggle CLI
+  set up). First set `kernel_id` in `kaggle/androidcontrol_parse/config_run1.json` to
+  `<your-kaggle-username>/a11ydebt-androidcontrol-run1`. The kernel downloads, verifies, parses and
+  deletes one shard at a time, and returns about 12 MB of Parquet per 10 shards
+  ([kaggle/androidcontrol_parse/README.md](kaggle/androidcontrol_parse/README.md)).
+  ```bash
+  uv run python kaggle/androidcontrol_parse/build_kernel.py kaggle/androidcontrol_parse/config_run1.json
+  kaggle kernels push -p kaggle/androidcontrol_parse/build/run1
+  kaggle kernels output <your-kaggle-username>/a11ydebt-androidcontrol-run1 -p kaggle_out/run1
+  a11ydebt summarize androidcontrol kaggle_out --out audit_ac
+  a11ydebt report "Rico=audit_rico" "AndroidControl=audit_ac" --out report
+  ```
+  `config_run1.json` covers shards 00000 to 00009 (the paper's 10), and `config_run2.json` covers
+  00010 to 00019.
 
 ## What it counts
-Every count applies the AISSA 2026 codebook: roles come from class-name suffixes, and only
-nodes that are visible to the user and have positive area are included.
+Every count applies the AISSA 2026 codebook (`src/a11ydebt/taxonomy.py`). Roles come from
+class names, and only nodes that are visible to the user and have positive area are included.
 
 | Population | Definition |
 |---|---|
-| `needs_label` (default) | Images, plus interactive elements with no visible text. Containers and web views are exempt. |
-| `icon_like` | A tappable image or button with no visible text. This is the strictest unit. |
-| `interactive_image` | An image-based node (ImageView family, ImageButton, FAB) that is clickable or focusable. |
+| `needs_label` (the paper's primary measure) | Images, plus interactive elements with no visible text. Containers and web views are exempt. |
+| `icon_like` (the paper's strictest measure) | A tappable image or button with no visible text. |
+| `interactive_image` (new in a11ydebt) | An image-based node (ImageView family, ImageButton, FAB) that is clickable or focusable. |
 
-## License
-Apache-2.0 for the code (see `LICENSE` and `NOTICE`). The datasets have their own terms.
+## Results (v0.1.0)
+Label coverage, with 95% app-cluster bootstrap intervals[^seeds]. AndroidControl is the
+paper's 10 shards. Full tables: [results/v0.1/](results/v0.1/).
+
+| Population | Rico: candidates | Rico: coverage % [95% CI] | AndroidControl: candidates | AndroidControl: coverage % [95% CI] |
+|---|---:|---:|---:|---:|
+| needs_label | 502,585 | **17.74** [17.12, 18.37] | 1,462,544 | **57.27** [55.66, 58.84] |
+| icon_like | 127,552 | **33.20** [31.96, 34.47] | 194,529 | **62.75** [57.76, 67.39] |
+| interactive_image | 105,780 | 33.29 [31.97, 34.66] | 133,266 | 58.88 [53.50, 64.15] |
+
+Rico has 66,261 screens from 9,384 apps. The AndroidControl sample has 49,892 screens from 7,623
+episodes, with 951 app clusters (700 apps, plus 251 episodes with no identified app, each its own
+cluster). The point estimates equal the paper's exactly. The interactive_image row is not in the
+paper.
+
+[^seeds]: Intervals use independent seeds. The paper's shared-stream intervals (Table I) are
+    reproduced exactly by `scripts/compare_aissa.py bootstrap`; see
+    [docs/reproduction-bootstrap.md](docs/reproduction-bootstrap.md).
+
+## Reproducing the paper
+- Rico: [docs/reproduction-rico.md](docs/reproduction-rico.md). All 66,261 screens and 9,384 apps
+  equal the AISSA pipeline's counts.
+- AndroidControl: [docs/reproduction-androidcontrol.md](docs/reproduction-androidcontrol.md). All
+  10 shards, 7,623 episodes and 49,888 non-empty screens are equal.
+- Intervals: [docs/reproduction-bootstrap.md](docs/reproduction-bootstrap.md). All six published
+  cluster-bootstrap intervals match, with bit-identical draws.
+- A practical guide: [docs/how-to-audit.md](docs/how-to-audit.md).
+
+`scripts/compare_aissa.py` checks a run against copies of the AISSA pipeline's outputs. It is a
+development tool and is not part of the package.
+
+## Data
+a11ydebt ships **no data**. Rico's terms forbid redistributing its files, so this repository
+publishes only aggregate statistics. AndroidControl is Apache-2.0. See
+[docs/data-card.md](docs/data-card.md) for what the tables contain and how to regenerate them, and
+[docs/licenses.md](docs/licenses.md) for each dataset's terms.
+
+## How to cite
+Please cite the paper. If you use the software, cite it as well. [CITATION.cff](CITATION.cff)
+carries both entries.
+
+```bibtex
+@inproceedings{kraishan2026trained,
+  title     = {Trained on What Screen Readers Cannot Read: Accessibility Debt in the {GUI}
+               Corpora Behind Computer-Use Agents},
+  author    = {Kraishan, Obada and Jitkajornwanich, Kulsawasd},
+  booktitle = {IEEE AISSA 2026},
+  year      = {2026},
+  note      = {DOI to be added when IEEE Xplore assigns one}
+}
+
+@software{kraishan2026a11ydebt,
+  author  = {Kraishan, Obada},
+  title   = {a11ydebt: Audit Accessibility Debt in GUI-Agent Corpora},
+  version = {0.1.0},
+  year    = {2026},
+  url     = {https://github.com/obadaKraishan/a11ydebt},
+  note    = {Zenodo DOI to be added at release}
+}
+```
+
+## Development
+```bash
+uv sync                                          # Python 3.10+, with ruff, pytest and pyarrow for dev
+uv run pytest                                    # synthetic fixtures only, no data needed
+uv run ruff check . && uv run ruff format --check .
+```
+CI runs the same checks on Python 3.10 to 3.13.
+
+## License and provenance
+The code is Apache-2.0 ([LICENSE](LICENSE)). The codebook, the AndroidControl reader and the
+cluster bootstrap are ported from the MIT-licensed AISSA pipeline (accessibility-debt-agents).
+[NOTICE](NOTICE) lists every ported file and keeps the MIT notice. The datasets have their own
+terms ([docs/licenses.md](docs/licenses.md)).
+
+## AI-use disclosure
+a11ydebt is developed with [Claude Code](https://claude.com/claude-code), Anthropic's AI coding
+assistant. Claude Code drafts code, tests and documentation. The author, Obada Kraishan, reviews
+every change before it is committed and is responsible for the package's design, its statistical
+choices and its correctness. Commits made with Claude Code carry a `Co-Authored-By: Claude`
+trailer, so the history shows which changes were AI-assisted. No language model produces any
+number in the audit: the counts come from deterministic parsing, and the intervals from a seeded
+bootstrap.
