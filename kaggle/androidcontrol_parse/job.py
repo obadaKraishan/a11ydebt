@@ -341,8 +341,16 @@ def run(
     ]
     wanted = [e["name"] for e in config["shards"]]
     totals: Counter[str] = Counter()
-    for m in markers:
-        totals.update({k: v for k, v in m["totals"].items() if isinstance(v, int)})
+    for m in markers:  # "apps" is a per-shard distinct count, so it is recomputed below
+        totals.update({k: v for k, v in m["totals"].items() if isinstance(v, int) and k != "apps"})
+    app_files = [out_dir / "screens" / f"{n}.parquet" for n in done]
+    apps = {
+        a
+        for f in app_files
+        if f.exists()
+        for a in pq.read_table(f, columns=["app"])["app"].to_pylist()
+    }
+    totals["apps"] = len(apps - {""})
     summary = {
         "status": "complete" if set(wanted) <= set(done) else "incomplete",
         "stopped_before_time_limit": stopped_early,

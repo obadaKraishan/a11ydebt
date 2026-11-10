@@ -264,7 +264,12 @@ def main_androidcontrol(argv: list[str]) -> int:
         e["screens"] += 1
         for _ref_col, col in AC_SCREEN_FIELDS:
             e[col] += r[col]
-    apps = {r["app"] for r in ours if r["app"]}
+    # AISSA counts apps over episodes with at least one needs-label element (ReviewerChecks).
+    needs_per_episode: dict[int, int] = defaultdict(int)
+    for r in ours:
+        needs_per_episode[r["episode_id"]] += r["needs_label_candidates"]
+    apps_all = {r["app"] for r in ours if r["app"]}
+    apps = {r["app"] for r in ours if r["app"] and needs_per_episode[r["episode_id"]] > 0}
 
     lines: list[str] = []
     all_ok = True
@@ -297,7 +302,10 @@ def main_androidcontrol(argv: list[str]) -> int:
     check("Icon-like: candidates", totals["icons"], il)
     check("Icon-like: labelled", totals["icons_labelled"], ill)
     check("Icon-like coverage %", overall[6], pct(ill, il))
-    check("Apps identified from resource ids", ref_apps, len(apps))
+    check("Apps from resource ids (episodes with needs-label elements)", ref_apps, len(apps))
+    lines.append(
+        f"| Apps from resource ids, all episodes (information only) | - | {len(apps_all):,} | - |"
+    )
 
     lines += [
         "",
