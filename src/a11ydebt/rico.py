@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any
 
 from a11ydebt import taxonomy as tx
+from a11ydebt.counts import POPULATIONS
 
 __all__ = [
     "POPULATIONS",
@@ -36,12 +37,6 @@ __all__ = [
     "parse_screen",
     "read_ui_details",
 ]
-
-#: The populations a11ydebt counts. All of them require ``included`` (visible, positive area).
-#:   needs_label        the paper's primary denominator (AISSA "label coverage")
-#:   icon_like          the paper's strictest denominator (a tappable graphic with no text)
-#:   interactive_image  the P01 rule: an image-based node that is clickable or focusable
-POPULATIONS: tuple[str, ...] = ("needs_label", "icon_like", "interactive_image")
 
 
 @dataclass(frozen=True, slots=True)

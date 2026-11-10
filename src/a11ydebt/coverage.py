@@ -1,7 +1,7 @@
 """Content-description coverage per screen, per app and per corpus.
 
 ``coverage()`` turns parsed screens into counts and proportions for every population in
-:data:`a11ydebt.rico.POPULATIONS`. ``audit_rico()`` runs the whole pipeline over a Rico folder,
+:data:`a11ydebt.counts.POPULATIONS`. ``audit_rico()`` runs the whole pipeline over a Rico folder,
 optionally in parallel, and records unreadable files instead of stopping.
 
 Proportions are pooled: an app's coverage is labelled / candidates over all of its screens,
@@ -18,7 +18,8 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, computed_field
 
-from a11ydebt.rico import POPULATIONS, RicoScreen, find_screen_files, load_screen, read_ui_details
+from a11ydebt.counts import POPULATIONS, ScreenLike, count_screen
+from a11ydebt.rico import find_screen_files, load_screen, read_ui_details
 
 __all__ = [
     "AppCoverage",
@@ -109,36 +110,20 @@ class CoverageReport(BaseModel):
     failures: list[ParseFailure] = []
 
 
-def screen_coverage(screen: RicoScreen) -> ScreenCoverage:
-    """Counts for one screen, over included nodes only."""
-    candidates = dict.fromkeys(POPULATIONS, 0)
-    labelled = dict.fromkeys(POPULATIONS, 0)
-    role_candidates: dict[str, int] = defaultdict(int)
-    role_labelled: dict[str, int] = defaultdict(int)
-    n_included = 0
-    for node in screen.nodes:
-        if not node.included:
-            continue
-        n_included += 1
-        has_label = node.labelled
-        for population in POPULATIONS:
-            if getattr(node, population):
-                candidates[population] += 1
-                labelled[population] += has_label
-        if node.needs_label:
-            role_candidates[node.role] += 1
-            role_labelled[node.role] += has_label
+def screen_coverage(screen: ScreenLike) -> ScreenCoverage:
+    """Counts for one screen (Rico or AndroidControl), over included nodes only."""
+    c = count_screen(screen)
     return ScreenCoverage(
         screen_id=screen.screen_id,
         app=screen.app,
-        n_nodes=len(screen.nodes),
-        n_included=n_included,
+        n_nodes=c.n_nodes,
+        n_included=c.n_included,
         populations={
-            p: Counts(candidates=candidates[p], labelled=labelled[p]) for p in POPULATIONS
+            p: Counts(candidates=c.candidates[p], labelled=c.labelled[p]) for p in POPULATIONS
         },
         needs_label_by_role={
-            role: Counts(candidates=role_candidates[role], labelled=role_labelled[role])
-            for role in sorted(role_candidates)
+            role: Counts(candidates=c.role_candidates[role], labelled=c.role_labelled[role])
+            for role in sorted(c.role_candidates)
         },
     )
 
@@ -151,7 +136,7 @@ def _sum(counts: Iterable[Counts]) -> Counts:
 
 
 def coverage(
-    screens: Iterable[RicoScreen | ScreenCoverage],
+    screens: Iterable[ScreenLike | ScreenCoverage],
     *,
     dataset: str = "rico",
     failures: Iterable[ParseFailure] = (),
