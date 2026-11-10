@@ -6,7 +6,7 @@ import shutil
 
 import pytest
 
-from a11ydebt.coverage import Counts, audit_rico, coverage, screen_coverage
+from a11ydebt.coverage import Counts, ScreenCoverage, audit_rico, coverage, screen_coverage
 from a11ydebt.rico import iter_screens
 
 
@@ -117,3 +117,23 @@ def test_unreadable_files_are_recorded_not_fatal(rico_dir, tmp_path):
     assert [f.screen_id for f in result.failures] == ["104", "105"]
     assert result.failures[0].error.startswith("JSONDecodeError")
     assert "no activity.root" in result.failures[1].error
+
+
+def test_screens_without_an_app_are_not_counted_as_an_app():
+    def screen(sid, app):
+        return ScreenCoverage(
+            screen_id=sid,
+            app=app,
+            n_nodes=1,
+            n_included=1,
+            populations={p: Counts() for p in ("needs_label", "icon_like", "interactive_image")},
+            needs_label_by_role={},
+        )
+
+    report = coverage([screen("1", "com.a"), screen("2", ""), screen("3", "com.b")])
+    assert report.corpus.n_apps == 2
+    assert {a.app for a in report.apps} == {
+        "",
+        "com.a",
+        "com.b",
+    }  # the unknown group is still listed

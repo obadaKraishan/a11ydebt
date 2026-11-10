@@ -169,7 +169,7 @@ def coverage(
     roles = sorted({role for s in per_screen for role in s.needs_label_by_role})
     corpus = CorpusCoverage(
         n_screens=len(per_screen),
-        n_apps=len(apps),
+        n_apps=sum(1 for a in apps if a.app),  # screens with no identified app ("") are no app
         n_nodes=sum(s.n_nodes for s in per_screen),
         n_included=sum(s.n_included for s in per_screen),
         populations={p: _sum(a.populations[p] for a in apps) for p in POPULATIONS},
