@@ -2,6 +2,7 @@
 
     uv run python scripts/compare_aissa.py [rico] AUDIT_DIR REFERENCE_DIR [--out FILE]
     uv run python scripts/compare_aissa.py androidcontrol KAGGLE_OUT REFERENCE_DIR [--out FILE]
+    uv run python scripts/compare_aissa.py bootstrap RICO_AUDIT AC_AUDIT REFERENCE_DIR [--out FILE]
 
 rico: AUDIT_DIR is the output of ``a11ydebt audit rico ... --out AUDIT_DIR`` (screens.csv,
 apps.csv, summary.json). REFERENCE_DIR holds copies of the AISSA outputs (accessibility-debt-agents,
@@ -10,6 +11,12 @@ commit 97c0378): rico_parse_report.json, rico_screens.parquet, manuscript_number
 androidcontrol: KAGGLE_OUT is what ``kaggle kernels output`` pulled for run 1 (screens/*.parquet,
 shards/*.json, run_summary.json). REFERENCE_DIR also needs the files written by
 ``scripts/aissa_androidcontrol_reference.py``.
+
+bootstrap: RICO_AUDIT and AC_AUDIT are audit folders (screens.csv, summary.json) for Rico and for
+AndroidControl run 1. It replays AISSA's ReviewerChecks Check 1: one generator seeded 20260908,
+5,000 resamples per interval, drawn in AISSA's order (AndroidControl screen, AndroidControl app,
+Rico screen, Rico app), and compares the clustered_coverage and clustered_gap tables. It also
+prints the intervals ``a11ydebt report`` gives, where each interval has its own generator.
 
 Prints Markdown tables: corpus totals, coverage by role (RQ1 Tables 1 and 2), and screen, episode,
 shard and app agreement. Exits 1 if any AISSA quantity is not reproduced exactly. Dev-only: it needs
@@ -25,7 +32,18 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+import numpy as np
 import pyarrow.parquet as pq
+
+from a11ydebt.bootstrap import (
+    DEFAULT_N_RESAMPLES,
+    DEFAULT_SEED,
+    cluster_bootstrap_rate,
+    cluster_totals,
+    percentile_ci,
+    wilson_ci,
+)
+from a11ydebt.report import load_audit
 
 SCREEN_FIELDS = [  # (AISSA rico_screens.parquet column, a11ydebt screens.csv column)
     ("n_nodes", "n_nodes"),
@@ -436,10 +454,123 @@ def main_androidcontrol(argv: list[str]) -> int:
     return 0 if all_ok else 1
 
 
+def aissa_cluster_bootstrap_rate(k, n, rng, n_boot):
+    """AISSA's loop, verbatim from phase4_validation/03_reviewer_checks.py (commit 97c0378)."""
+    m = len(k)
+    out = np.empty(n_boot)
+    for b in range(n_boot):
+        idx = rng.integers(0, m, m)
+        kk, nn = k[idx].sum(), n[idx].sum()
+        out[b] = kk / nn if nn else np.nan
+    return out
+
+
+def main_bootstrap(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(description="Replay AISSA's clustered coverage intervals.")
+    parser.add_argument("rico_audit", type=Path)
+    parser.add_argument("androidcontrol_audit", type=Path)
+    parser.add_argument("reference_dir", type=Path)
+    parser.add_argument("--out", type=Path, help="also write the Markdown to this file")
+    args = parser.parse_args(argv)
+
+    manuscript = json.loads(
+        (args.reference_dir / "manuscript_numbers.json").read_text(encoding="utf-8")
+    )
+    reviewer = manuscript["reports"]["ReviewerChecks"]
+    tables = {t["name"]: t for t in reviewer["tables"]}
+    ref_cov = {(r[0], r[1]): r for r in tables["clustered_coverage"]["rows"]}
+    ref_gap = {r[0]: r for r in tables["clustered_gap"]["rows"]}
+    seed = reviewer["provenance"]["seed"]
+    n_boot = reviewer["provenance"]["n_boot"]
+
+    # AISSA groups by dataset name, so androidcontrol_2024 is drawn before rico_2017, and within
+    # each dataset the screen level before the app level, all from one generator.
+    corpora = [
+        ("androidcontrol_2024", load_audit(args.androidcontrol_audit)),
+        ("rico_2017", load_audit(args.rico_audit)),
+    ]
+    rng_ours = np.random.default_rng(seed)
+    rng_aissa = np.random.default_rng(seed)
+    lines = [
+        "**Clustered coverage, needs_label** (AISSA: ReviewerChecks `clustered_coverage`; "
+        f"seed {seed}, {n_boot:,} resamples)",
+        "",
+        "| Dataset | Cluster | Clusters (AISSA / ours) | Coverage % (AISSA / ours) "
+        "| 95% CI, AISSA | 95% CI, replay | Wilson, AISSA / ours | Match | Draws identical "
+        "| `a11ydebt report` CI |",
+        "|---|---|---:|---:|---:|---:|---:|:-:|:-:|---:|",
+    ]
+    all_ok = True
+    draws: dict[tuple[str, str], np.ndarray] = {}
+    points: dict[str, float] = {}
+
+    def ci_text(lo: float, hi: float) -> str:
+        return f"[{100 * lo:.2f}, {100 * hi:.2f}]"
+
+    for name, audit in corpora:
+        screens = audit.screens["needs_label"]
+        k_el = sum(s.labelled for s in screens)
+        n_el = sum(s.candidates for s in screens)
+        points[name] = k_el / n_el
+        wilson = ci_text(*wilson_ci(k_el, n_el))
+        for level in ("screen", "app"):
+            _keys, k, n = cluster_totals(screens, level=level, dataset=audit.dataset)
+            ours = cluster_bootstrap_rate(k, n, n_resamples=n_boot, rng=rng_ours)
+            theirs = aissa_cluster_bootstrap_rate(k, n, rng_aissa, n_boot)
+            draws[(name, level)] = ours
+            own = cluster_bootstrap_rate(k, n, n_resamples=DEFAULT_N_RESAMPLES, seed=DEFAULT_SEED)
+            ref = ref_cov[(name, level)]
+            row = [f"{len(k):,}", f"{100 * k_el / n_el:.2f}", ci_text(*percentile_ci(ours))]
+            ok = row == [ref[2], ref[3], ref[4]] and wilson == ref[5]
+            identical = bool(np.array_equal(ours, theirs))
+            all_ok &= ok and identical
+            lines.append(
+                f"| {name} | {level} | {ref[2]} / {row[0]} | {ref[3]} / {row[1]} | {ref[4]} "
+                f"| {row[2]} | {ref[5]} / {wilson} | {'yes' if ok else '**NO**'} "
+                f"| {'yes' if identical else '**NO**'} | {ci_text(*percentile_ci(own))} |"
+            )
+    lines += [
+        "",
+        "**Cross-corpus gap, AndroidControl minus Rico** (AISSA: `clustered_gap`)",
+        "",
+        "| Cluster | Gap pp (AISSA / ours) | 95% CI, AISSA | 95% CI, replay | Match |",
+        "|---|---:|---:|---:|:-:|",
+    ]
+    for level in ("screen", "app"):
+        gap = draws[("androidcontrol_2024", level)] - draws[("rico_2017", level)]
+        point = f"{100 * (points['androidcontrol_2024'] - points['rico_2017']):+.2f}"
+        ci = ci_text(*percentile_ci(gap))
+        ref = ref_gap[level]
+        ok = [point, ci] == [ref[1], ref[2]]
+        all_ok &= ok
+        lines.append(
+            f"| {level} | {ref[1]} / {point} | {ref[2]} | {ci} | {'yes' if ok else '**NO**'} |"
+        )
+    lines += [
+        "",
+        "The replay uses a11ydebt's own per-screen counts and app assignments with "
+        "`a11ydebt.bootstrap` on one shared generator. *Draws identical* compares all "
+        f"{n_boot:,} draws, bit for bit, with AISSA's loop copied verbatim and run on the same "
+        "clusters. The last column gives one generator per interval, seeded "
+        f"{DEFAULT_SEED}, which is what `a11ydebt report` uses.",
+        "",
+        "**Verdict: "
+        + ("all AISSA intervals reproduced exactly" if all_ok else "MISMATCHES FOUND")
+        + "**",
+    ]
+    text = "\n".join(lines)
+    print(text)
+    if args.out:
+        args.out.write_text(text + "\n", encoding="utf-8")
+    return 0 if all_ok else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
     if args and args[0] == "androidcontrol":
         return main_androidcontrol(args[1:])
+    if args and args[0] == "bootstrap":
+        return main_bootstrap(args[1:])
     if args and args[0] == "rico":
         args = args[1:]
     return main_rico(args)
