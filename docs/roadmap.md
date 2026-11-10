@@ -1,55 +1,44 @@
-# Roadmap 01 of 10: a11ydebt (Zero-Cash Edition)
+# Roadmap: a11ydebt
 
-**Accessibility-Debt Audit of GUI Agent Corpora** · Prepared for Obada Kraishan, November 2026
+**Accessibility-Debt Audit of GUI Agent Corpora**
 
-> **Why it will be cited:** The first reproducible, cross-corpus measure of the accessibility debt built into the data behind GUI agents.
+> **Aim:** the first reproducible, cross-corpus measure of the accessibility debt built into the
+> data behind GUI agents.
 
 | At a glance | |
 |---|---|
-| When | **First wave: start now** |
-| Start | Start in week 1. AISSA (Dec 8 to 10) is the only hard external deadline in the portfolio. |
-| Cash | $0 |
-| API credit | $0 (optional few $) |
-| Start | Week 1 |
-| First release | Week 4, v0.1 |
-| Depends on | Your AISSA pipeline |
-| Feeds | TACCESS extension |
+| First release | v0.1.0, before IEEE AISSA 2026 (Dec 8 to 10) |
+| Depends on | The AISSA 2026 pipeline (accessibility-debt-agents), as the reference implementation |
 
-**What changed in this edition:** VLM decorative-icon judging moved to v1.1 behind a validation gate. AndroidControl (Apache 2.0, about 50 GB) is parsed on Kaggle.
-
+**Design notes:** VLM decorative-icon judging is a v1.1 experiment behind a validation gate.
+AndroidControl (Apache 2.0, about 50 GB) is parsed on Kaggle.
 
 ---
 
 ## 1. Goal and v1 scope
 
-A pip-installable CLI, `a11ydebt audit rico|androidcontrol`, that reproduces your AISSA content-description coverage numbers from raw data. It ships with a public audit table and a 2-page "how to audit your GUI corpus" note you can show at AISSA.
+A pip-installable CLI, `a11ydebt audit rico|androidcontrol`, that reproduces the AISSA paper's content-description coverage numbers from raw data. It ships with a public audit table and a 2-page "how to audit your GUI corpus" note for AISSA.
 
 - **v1 (by AISSA, Dec 8 to 10):** Rico and AndroidControl only.
 - **v1.1:** AITW and AMEX loaders, plus the decorative-icon experiment.
 
-## 2. What changed
+## 2. Design decisions
 
-- **The VLM decorative-icon judge moved** from a v1 feature to a v1.1 experiment with a validation gate. No source verifies that small VLMs judge decorative icons reliably, so it has to earn its place.
-- **AndroidControl is easier to get than assumed.** It is Apache 2.0 Google Research data at `gs://gresearch/android_control/` (GZIP TFRecords), with Hugging Face mirrors (about 50 GB as TFRecord, about 67 GB as Parquet). That is too big for your laptop, so Kaggle parses it.
+- **The VLM decorative-icon judge is a v1.1 experiment** with a validation gate, not a v1 feature. No source verifies that small VLMs judge decorative icons reliably, so it has to earn its place.
+- **AndroidControl is easy to get.** It is Apache 2.0 Google Research data at `gs://gresearch/android_control/` (GZIP TFRecords), with Hugging Face mirrors (about 50 GB as TFRecord, about 67 GB as Parquet). That is too big for a laptop, so Kaggle parses it.
 
 ## 3. Toolchain map
 
 | Who | What it does |
 |---|---|
-| **Claude Code** (subscription) | Parsers for Rico view hierarchies and AndroidControl TFRecords, coverage metrics, cluster bootstrap by app, CLI, tests, docs |
-| **Local models** (Kraishan drive) | None needed for v1. For v1.1 spot checks, a 3B to 4B VLM via Ollama on a handful of crops |
+| **Claude Code** | Parsers for Rico view hierarchies and AndroidControl TFRecords, coverage metrics, cluster bootstrap by app, CLI, tests, docs |
+| **Local models** | None needed for v1. For v1.1 spot checks, a 3B to 4B VLM via Ollama on a handful of crops |
 | **Kaggle T4x2** | Stream and parse AndroidControl, compute per-episode tables, write compact Parquet. Later, run Qwen2.5-VL or Qwen3-VL 7B (AWQ) as a first-pass decorative-vs-informative judge |
-| **$100 API credit** | None for v1. Optional Haiku 5.5 vision second opinion on a 300-crop validation set |
+| **Hosted model (optional)** | None for v1. A Claude Haiku vision second opinion on a 300-crop validation set |
 
-## 4. Cost
+## 4. Build sessions
 
-| Item | Cost |
-|---|---|
-| Cash | **$0** |
-| API credit | $0 for v1; a few dollars for the optional v1.1 second opinion |
-| Kaggle GPU | A few hours for AndroidControl parsing |
-
-## 5. Build sessions
+S1 to S4 make up v0.1.0; S5 to S7 come after AISSA.
 
 | Session | Deliverable |
 |---|---|
@@ -58,12 +47,12 @@ A pip-installable CLI, `a11ydebt audit rico|androidcontrol`, that reproduces you
 | S3 | Cluster bootstrap CIs by app; reproduce the paper's tables; `a11ydebt report` writes Markdown and CSV |
 | S4 | Packaging (pyproject, `pipx install a11ydebt`), README with AISSA citation, Zenodo DOI, **v0.1.0 tag** |
 | S5 (after AISSA) | RICO-Semantics join (about 500k human annotations: 350k icon shape, 78k icon semantics, 66k label associations) to define "icon needs a label" |
-| S6 | VLM judge on Kaggle over a stratified 300-crop sample, compared against your labels and Kulsawasd Jitkajornwanich's |
+| S6 | VLM judge on Kaggle over a stratified 300-crop sample, compared against the two paper authors' labels |
 | S7 | AITW and AMEX loaders |
 
-## 6. Kickoff prompt
+## 5. Kickoff prompt (S1)
 
-Paste this into Claude Code in the new `a11ydebt` repo:
+The prompt that started the AI-assisted development in Claude Code:
 
 ```text
 You are helping me turn my IEEE AISSA 2026 paper (content-description coverage in Rico and
@@ -75,29 +64,32 @@ screen and per app; (d) tests using 3 tiny fixture hierarchies you create. Do no
 yourself; give me the exact download commands instead. Stop after tests pass.
 ```
 
-## 7. Data, licensing and ethics
+## 6. Data, licensing and ethics
+
+See `docs/licenses.md` for each dataset's terms as checked.
 
 - **AndroidControl:** Apache 2.0.
 - **Rico:** license listed as "unknown" on Hugging Face mirrors, so redistribute only derived statistics and IDs, never screenshots.
 - **RICO-Semantics:** a Google Research dataset on GitHub; check its license file before redistributing labels.
 - **No human subjects** are involved.
 
-## 8. Quality checks
+## 7. Quality checks
 
-- Reproduce your published numbers to within rounding.
+- Reproduce the paper's published numbers to within rounding.
 - Unit tests on fixture hierarchies.
 - Report second-coder agreement with Krippendorff's alpha.
 - **VLM gate:** the VLM judge counts as a labeler only if alpha ≥ 0.80 against humans on n = 300 (binomial 95% CI about ±5.7 points). Otherwise it is a triage tool only.
 
-## 9. Release checklist
+## 8. Release checklist
+
+The full steps are in `docs/release-checklist.md`.
 
 - [ ] Version tag and Zenodo DOI
 - [ ] CITATION.cff
 - [ ] Data card stating what is not redistributed
-- [ ] QR code on your AISSA slide linking to the repo
-- [ ] Optional HF Space demo (ZeroGPU)
+- [ ] QR code on the AISSA slide linking to the repo
 
-## 10. Timeline (5 to 8 hours/week)
+## 9. Timeline
 
 | Week | Work |
 |---|---|
@@ -107,21 +99,15 @@ yourself; give me the exact download commands instead. Stop after tests pass.
 | 4 (Dec 1 to 10) | S4 release v0.1 and **AISSA** |
 | 5 to 6 | S5 RICO-Semantics join |
 | 7 to 8 | S6 VLM judge experiment |
-| 9 to 10 | S7 AITW and AMEX; journal-extension tables |
+| 9 to 10 | S7 AITW and AMEX |
 
-## 11. Risks and fallbacks
+## 10. Risks and fallbacks
 
 | Risk | Fallback |
 |---|---|
 | AndroidControl parsing too slow on Kaggle | Process the test split first |
 | VLM judge unreliable | Report it as a negative finding; that is still a contribution |
 | AISSA time crunch | Ship a Rico-only v0.1 |
-
-## 12. What a grant adds
-
-- Human annotation of decorative icons at scale
-- Larger VLMs
-- GUI-360, OS-Atlas, Mind2Web and AndroidWorld in the audit
 
 ---
 
