@@ -1,6 +1,6 @@
 # results/v0.1: aggregate audit tables
 
-These are the tables from `a11ydebt report` for a11ydebt 0.1.0. They hold **corpus-level aggregate
+These are the tables from `a11ydebt report` for a11ydebt 0.1.1. They hold **corpus-level aggregate
 statistics only**: no per-screen, per-app or per-node rows, no screen or app identifiers, and no
 Rico or AndroidControl content (see [docs/data-card.md](../../docs/data-card.md)).
 
@@ -38,7 +38,9 @@ a11ydebt report "Rico=data/interim/audit_rico" \
 The numbers are deterministic. Only the `generated` timestamp in `report.md` changes between runs.
 
 ## Provenance
-- **Code:** a11ydebt 0.1.0, generated on 2026-11-10 at commit `1e5c4c2`.
+- **Code:** a11ydebt 0.1.1, generated on 2026-11-11 UTC at commit `0bb9138`. The 0.1.0 tables
+  (commit `1e5c4c2`) had the same numbers: the three CSVs are byte-identical, and only the
+  `report.md` header changed, which now gives identified apps and no-app episodes separately.
 - **Rico input:** the checksums are in [docs/reproduction-rico.md](../../docs/reproduction-rico.md).
 - **AndroidControl input:** each shard's bytes and checksum were verified on Kaggle (SHA-256 from AISSA for shards 00000 to 00009, MD5 from GCS for 00010 to 00019; see `kaggle/androidcontrol_parse/config_run*.json`).
 - **Human or LLM:** no language model produced, labelled or edited any number. Every value comes from deterministic parsing and a seeded bootstrap. (The code was written with Claude Code; see the AI-use disclosure in the README.)

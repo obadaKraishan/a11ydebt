@@ -77,7 +77,9 @@ is seeded, so a rerun gives identical numbers.
   the LLM model and licence fields of the portfolio's provenance scheme do not apply. (The v1.1
   decorative-icon experiment would add LLM-judged items, with model and licence recorded per row.)
 - **Versions:** the tables in `results/v0.1/` came from a11ydebt 0.1.0, Kaggle runs 1 and 2
-  (bundled from commit `3896724`), seed 20260908 and 5,000 resamples.
+  (bundled from commit `3896724`), seed 20260908 and 5,000 resamples. a11ydebt 0.1.1
+  regenerated `report.md` (its header now separates identified apps from no-app episodes); the
+  CSVs are byte-identical.
 
 ## Known limitations
 - **Content description only.** Coverage counts a non-empty `content-desc`. It does not count

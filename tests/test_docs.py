@@ -117,3 +117,28 @@ def test_how_to_audit_cluster_counts_match_the_results():
     assert f"{rico:,} have a needs-label candidate" in text
     m = re.search(r"its ([\d,]+) clusters are ([\d,]+) of the [\d,]+ apps plus ([\d,]+) of", text)
     assert m and _num(m.group(1)) == ac == _num(m.group(2)) + _num(m.group(3))
+
+
+def test_readme_app_counts_match_the_report_headers():
+    report = _text(RESULTS / "report.md")
+    readme = _text(ROOT / "README.md")
+    how_to = _text(ROOT / "docs" / "how-to-audit.md")
+    header = (
+        r"from `[^`]+`: ([\d,]+) screens, [\d,]+ nodes \([^)]*\), ([\d,]+) identified apps? and "
+    )
+    rico = re.search(r"## Rico Dataset `rico` " + header + r"([\d,]+) screens? with no", report)
+    ac10 = re.search(rf"## {re.escape(AC10)} Dataset `androidcontrol` " + header, report)
+    ac10_no_app = re.search(r"([\d,]+) episodes? with no identified app", report[ac10.end() :])
+    assert rico and ac10 and ac10_no_app
+
+    m = re.search(r"Rico has ([\d,]+) screens from ([\d,]+) apps", readme)
+    assert m and m.groups() == rico.groups()[:2]
+    assert f"Rico has {rico.group(2)} apps" in how_to
+    m = re.search(
+        r"The AndroidControl sample has ([\d,]+) screens from [\d,]+ episodes: ([\d,]+) identified "
+        r"apps, and ([\d,]+) episodes with no identified app",
+        readme,
+    )
+    assert m and m.groups() == (*ac10.groups(), ac10_no_app.group(1))
+    assert f"of the {ac10.group(2)} apps plus" in how_to
+    assert f"of the {ac10_no_app.group(1)} no-app episodes" in how_to
