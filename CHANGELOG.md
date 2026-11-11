@@ -6,11 +6,42 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-10
+Documentation and CI fixes after the first release. No coverage number or interval changes.
+
+### Added
+- `CONTRIBUTING.md`: issues (never attach Rico data), the branch and pull-request
+  workflow on the protected `main`, tests and formatting, and the AI-assistance policy. The
+  README's Development section links to it.
+
 ### Changed
 - After the 0.1.0 release: the README has PyPI and Zenodo DOI badges, and its software BibTeX
   entry carries the concept DOI. `CITATION.cff` gains `doi` (the concept DOI,
   10.5281/zenodo.24121869) and `identifiers` (the 0.1.0 version DOI, 10.5281/zenodo.24121870).
   The paper DOI follows once IEEE Xplore assigns it.
+- `a11ydebt report`: each corpus header gives identified apps and the app clusters with no
+  identified app separately, for example "701 identified apps and 253 episodes with no
+  identified app" on AndroidControl, instead of "701 apps". The method note adds that the App
+  clusters column counts only the clusters with at least one candidate in that population (951
+  needs_label clusters = 700 apps + 251 episodes). No number changes. `CorpusReport` gains
+  `n_no_app`.
+- CI pins every action to a full commit SHA, with the exact version in a comment, as
+  `publish.yml` does: `actions/checkout` v7.0.1 (now with `persist-credentials: false`) and
+  `astral-sh/setup-uv` v10.3.3. A new `.github/dependabot.yml` proposes action updates once a
+  month, grouped, after a 7-day cooldown. zizmor 1.32.0 (auditor persona) and actionlint
+  1.7.12 report nothing.
+
+### Fixed
+- Every README link is absolute (`https://github.com/obadaKraishan/a11ydebt/blob/main/...` for
+  files, `.../tree/main/...` for folders), so the links work on PyPI's project page.
+  `tests/test_docs.py` fails if the README gains a relative link.
+- The README and `docs/how-to-audit.md` say which app count they give: AndroidControl's 10
+  shards have 701 identified apps and 253 episodes with no identified app, and needs_label has
+  951 app clusters (700 apps and 251 episodes with a candidate). Rico has 9,384 apps and 8,904
+  needs_label app clusters. The how-to-audit column is now "App clusters (needs_label)".
+  `tests/test_docs.py` checks these counts against `results/v0.1/`.
+- `docs/how-to-audit.md` cites the software after the paper, with the concept DOI
+  10.5281/zenodo.24121869.
 
 ## [0.1.0] - 2026-11-10
 The first release. It audits Rico and AndroidControl and reproduces the corpus coverage numbers
@@ -107,5 +138,6 @@ and cluster-bootstrap intervals of the IEEE AISSA 2026 paper exactly.
 - `docs/release-checklist.md` uses the trusted-publishing workflow and attaches no files to the
   GitHub release.
 
-[Unreleased]: https://github.com/obadaKraishan/a11ydebt/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/obadaKraishan/a11ydebt/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/obadaKraishan/a11ydebt/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/obadaKraishan/a11ydebt/releases/tag/v0.1.0

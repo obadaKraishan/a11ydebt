@@ -14,7 +14,7 @@ Readers Cannot Read: Accessibility Debt in the GUI Corpora Behind Computer-Use A
 (Kraishan and Jitkajornwanich). From the raw data, it reproduces the paper's corpus coverage
 numbers (overall and by role) and its cluster-bootstrap intervals exactly.
 
-> Version 0.1.0, released on 2026-11-10. It supports Rico and AndroidControl, and needs Python
+> Version 0.1.1, released on 2026-11-10. It supports Rico and AndroidControl, and needs Python
 > 3.10 or later.
 
 ## Install
@@ -36,7 +36,7 @@ kernel's Parquet outputs, also needs pyarrow: `pipx inject a11ydebt pyarrow`, or
    need *UI Screenshots and View Hierarchies* (`unique_uis.tar.gz`, 6.5 GB) and the UI metadata
    file `ui_details.csv`. Unpack the archive (about 16 GB) to get `combined/*.json`, and put
    `ui_details.csv` next to `combined/`. The checksums are in
-   [docs/reproduction-rico.md](docs/reproduction-rico.md).
+   [docs/reproduction-rico.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/reproduction-rico.md).
 2. Audit and report:
    ```bash
    a11ydebt audit rico path/to/rico --workers 8 --out audit_rico   # about 6 minutes on 8 cores
@@ -59,7 +59,7 @@ AndroidControl (Apache-2.0) is 20 GZIP TFRecord shards, about 50 GB in all, at
   set up). First set `kernel_id` in `kaggle/androidcontrol_parse/config_run1.json` to
   `<your-kaggle-username>/a11ydebt-androidcontrol-run1`. The kernel downloads, verifies, parses and
   deletes one shard at a time, and returns about 12 MB of Parquet per 10 shards
-  ([kaggle/androidcontrol_parse/README.md](kaggle/androidcontrol_parse/README.md)).
+  ([kaggle/androidcontrol_parse/README.md](https://github.com/obadaKraishan/a11ydebt/blob/main/kaggle/androidcontrol_parse/README.md)).
   ```bash
   uv run python kaggle/androidcontrol_parse/build_kernel.py kaggle/androidcontrol_parse/config_run1.json
   kaggle kernels push -p kaggle/androidcontrol_parse/build/run1
@@ -80,9 +80,9 @@ class names, and only nodes that are visible to the user and have positive area 
 | `icon_like` (the paper's strictest measure) | A tappable image or button with no visible text. |
 | `interactive_image` (new in a11ydebt) | An image-based node (ImageView family, ImageButton, FAB) that is clickable or focusable. |
 
-## Results (v0.1.0)
+## Results (v0.1.1)
 Label coverage, with 95% app-cluster bootstrap intervals[^seeds]. AndroidControl is the
-paper's 10 shards. Full tables: [results/v0.1/](results/v0.1/).
+paper's 10 shards. Full tables: [results/v0.1/](https://github.com/obadaKraishan/a11ydebt/tree/main/results/v0.1).
 
 | Population | Rico: candidates | Rico: coverage % [95% CI] | AndroidControl: candidates | AndroidControl: coverage % [95% CI] |
 |---|---:|---:|---:|---:|
@@ -91,22 +91,23 @@ paper's 10 shards. Full tables: [results/v0.1/](results/v0.1/).
 | interactive_image | 105,780 | 33.29 [31.97, 34.66] | 133,266 | 58.88 [53.50, 64.15] |
 
 Rico has 66,261 screens from 9,384 apps. The AndroidControl sample has 49,892 screens from 7,623
-episodes, with 951 app clusters (700 apps, plus 251 episodes with no identified app, each its own
-cluster). The point estimates equal the paper's exactly. The interactive_image row is not in the
-paper.
+episodes: 701 identified apps, and 253 episodes with no identified app. An app cluster counts
+only if it has at least one candidate, so needs_label has 8,904 app clusters on Rico and 951 on
+AndroidControl (700 apps, plus 251 no-app episodes, each its own cluster). The point estimates
+equal the paper's exactly. The interactive_image row is not in the paper.
 
 [^seeds]: Intervals use independent seeds. The paper's shared-stream intervals (Table I) are
     reproduced exactly by `scripts/compare_aissa.py bootstrap`; see
-    [docs/reproduction-bootstrap.md](docs/reproduction-bootstrap.md).
+    [docs/reproduction-bootstrap.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/reproduction-bootstrap.md).
 
 ## Reproducing the paper
-- Rico: [docs/reproduction-rico.md](docs/reproduction-rico.md). All 66,261 screens and 9,384 apps
+- Rico: [docs/reproduction-rico.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/reproduction-rico.md). All 66,261 screens and 9,384 apps
   equal the AISSA pipeline's counts.
-- AndroidControl: [docs/reproduction-androidcontrol.md](docs/reproduction-androidcontrol.md). All
+- AndroidControl: [docs/reproduction-androidcontrol.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/reproduction-androidcontrol.md). All
   10 shards, 7,623 episodes and 49,888 non-empty screens are equal.
-- Intervals: [docs/reproduction-bootstrap.md](docs/reproduction-bootstrap.md). All six published
+- Intervals: [docs/reproduction-bootstrap.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/reproduction-bootstrap.md). All six published
   cluster-bootstrap intervals match, with bit-identical draws.
-- A practical guide: [docs/how-to-audit.md](docs/how-to-audit.md).
+- A practical guide: [docs/how-to-audit.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/how-to-audit.md).
 
 `scripts/compare_aissa.py` checks a run against copies of the AISSA pipeline's outputs. It is a
 development tool and is not part of the package.
@@ -114,11 +115,11 @@ development tool and is not part of the package.
 ## Data
 a11ydebt ships **no data**. Rico's terms forbid redistributing its files, so this repository
 publishes only aggregate statistics. AndroidControl is Apache-2.0. See
-[docs/data-card.md](docs/data-card.md) for what the tables contain and how to regenerate them, and
-[docs/licenses.md](docs/licenses.md) for each dataset's terms.
+[docs/data-card.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/data-card.md) for what the tables contain and how to regenerate them, and
+[docs/licenses.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/licenses.md) for each dataset's terms.
 
 ## How to cite
-Please cite the paper. If you use the software, cite it as well. [CITATION.cff](CITATION.cff)
+Please cite the paper. If you use the software, cite it as well. [CITATION.cff](https://github.com/obadaKraishan/a11ydebt/blob/main/CITATION.cff)
 carries both entries.
 
 ```bibtex
@@ -134,7 +135,7 @@ carries both entries.
 @software{kraishan2026a11ydebt,
   author  = {Kraishan, Obada},
   title   = {a11ydebt: Audit Accessibility Debt in GUI-Agent Corpora},
-  version = {0.1.0},
+  version = {0.1.1},
   year    = {2026},
   url     = {https://github.com/obadaKraishan/a11ydebt},
   doi     = {10.5281/zenodo.24121869}
@@ -150,13 +151,15 @@ uv sync                                          # Python 3.10+, with ruff, pyte
 uv run pytest                                    # synthetic fixtures only, no data needed
 uv run ruff check . && uv run ruff format --check .
 ```
-CI runs the same checks on Python 3.10 to 3.13.
+CI runs the same checks on Python 3.10 to 3.13. `main` is protected: every change goes through a
+pull request, merged once CI is green. See
+[CONTRIBUTING.md](https://github.com/obadaKraishan/a11ydebt/blob/main/CONTRIBUTING.md).
 
 ## License and provenance
-The code is Apache-2.0 ([LICENSE](LICENSE)). The codebook, the AndroidControl reader and the
+The code is Apache-2.0 ([LICENSE](https://github.com/obadaKraishan/a11ydebt/blob/main/LICENSE)). The codebook, the AndroidControl reader and the
 cluster bootstrap are ported from the MIT-licensed AISSA pipeline (accessibility-debt-agents).
-[NOTICE](NOTICE) lists every ported file and keeps the MIT notice. The datasets have their own
-terms ([docs/licenses.md](docs/licenses.md)).
+[NOTICE](https://github.com/obadaKraishan/a11ydebt/blob/main/NOTICE) lists every ported file and keeps the MIT notice. The datasets have their own
+terms ([docs/licenses.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/licenses.md)).
 
 ## AI-use disclosure
 a11ydebt is developed with [Claude Code](https://claude.com/claude-code), an AI coding assistant.
@@ -165,5 +168,5 @@ correctness. Commits made with Claude Code carry a `Co-Authored-By: Claude` trai
 history shows which changes were AI-assisted. No language model produces any number in the
 audit: the counts come from deterministic parsing, and the intervals from a seeded bootstrap.
 
-The [prompts/](prompts/) and [reports/](reports/) folders hold the session-by-session record of
+The [prompts/](https://github.com/obadaKraishan/a11ydebt/tree/main/prompts) and [reports/](https://github.com/obadaKraishan/a11ydebt/tree/main/reports) folders hold the session-by-session record of
 the AI-assisted development.

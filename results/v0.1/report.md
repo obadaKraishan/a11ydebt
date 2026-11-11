@@ -1,12 +1,12 @@
 # a11ydebt coverage report
 
-a11ydebt 0.1.0 · generated 2026-11-10T21:57:57+00:00
+a11ydebt 0.1.1 · generated 2026-11-11T01:49:55+00:00
 
-Coverage is pooled: labelled / candidates. The 95% intervals are the percentile intervals of 5,000 cluster-bootstrap resamples (seed 20260908). Each interval has its own generator seeded with the seed.[^seeds] App clusters are apps; on AndroidControl, an episode with no identified app is its own cluster. Screen clusters are screens. Only clusters with at least one candidate are resampled.
+Coverage is pooled: labelled / candidates. The 95% intervals are the percentile intervals of 5,000 cluster-bootstrap resamples (seed 20260908). Each interval has its own generator seeded with the seed.[^seeds] App clusters are apps; on AndroidControl, an episode with no identified app is its own cluster. Screen clusters are screens. Only clusters with at least one candidate are resampled, so the App clusters column, which counts them per population, can be smaller than the identified apps plus the episodes with no identified app.
 
 ## Rico
 
-Dataset `rico` from `data/raw/rico`: 66,261 screens, 9,384 apps, 6,371,389 nodes (2,862,639 included: visible, positive area).
+Dataset `rico` from `data/raw/rico`: 66,261 screens, 6,371,389 nodes (2,862,639 included: visible, positive area), 9,384 identified apps and 0 screens with no identified app.
 
 **Coverage with 95% cluster-bootstrap intervals**
 
@@ -36,7 +36,7 @@ Dataset `rico` from `data/raw/rico`: 66,261 screens, 9,384 apps, 6,371,389 nodes
 
 ## AndroidControl, 10 shards (the paper's sample)
 
-Dataset `androidcontrol` from `data/interim/androidcontrol/run1`: 49,892 screens, 701 apps, 11,002,225 nodes (6,831,063 included: visible, positive area).
+Dataset `androidcontrol` from `data/interim/androidcontrol/run1`: 49,892 screens, 11,002,225 nodes (6,831,063 included: visible, positive area), 701 identified apps and 253 episodes with no identified app.
 
 **Coverage with 95% cluster-bootstrap intervals**
 
@@ -66,7 +66,7 @@ Dataset `androidcontrol` from `data/interim/androidcontrol/run1`: 49,892 screens
 
 ## AndroidControl, all 20 shards (robustness extension, not in the paper)
 
-Dataset `androidcontrol` from `data/interim/androidcontrol`: 99,131 screens, 770 apps, 21,825,664 nodes (13,494,134 included: visible, positive area).
+Dataset `androidcontrol` from `data/interim/androidcontrol`: 99,131 screens, 21,825,664 nodes (13,494,134 included: visible, positive area), 770 identified apps and 490 episodes with no identified app.
 
 **Coverage with 95% cluster-bootstrap intervals**
 

@@ -6,13 +6,13 @@ abstract: >-
   a11ydebt measures content-description coverage, the share of UI elements that need a
   screen-reader label and have one, in the GUI corpora behind computer-use agents. It reports
   coverage per screen, per app and per corpus, with app-cluster bootstrap intervals. Version
-  0.1.0 audits Rico and AndroidControl, and it reproduces the corpus coverage numbers and
+  0.1.1 audits Rico and AndroidControl, and it reproduces the corpus coverage numbers and
   intervals of the IEEE AISSA 2026 paper exactly.
 authors:
   - family-names: Kraishan
     given-names: Obada
     affiliation: "College of Media and Communication, Texas Tech University"
-version: "0.1.0"
+version: "0.1.1"
 # The concept DOI covers every version; each version also has its own DOI (identifiers below).
 doi: "10.5281/zenodo.24121869"
 identifiers:
