@@ -62,10 +62,14 @@ so no data is dropped. The CSV also gives the element-level Wilson interval, whi
 elements as independent. It is too narrow; report it only for comparison.
 
 ## Worked numbers (IEEE AISSA 2026)
-| Corpus | needs_label coverage [app-cluster 95% CI] | icon_like coverage [app-cluster 95% CI] | Apps (clusters) |
+| Corpus | needs_label coverage [app-cluster 95% CI] | icon_like coverage [app-cluster 95% CI] | App clusters (needs_label) |
 |---|---:|---:|---:|
 | Rico (2017), 66,261 screens | **17.74%** [17.12, 18.37] | **33.20%** [31.96, 34.47] | 8,904 |
 | AndroidControl (2024), 10 shards, 49,892 screens | **57.27%** [55.66, 58.84] | **62.75%** [57.76, 67.39] | 951 |
+
+Clusters are apps with at least one candidate (Rico has 9,384 apps; 8,904 have a needs-label
+candidate). On AndroidControl, each episode with no identified app is its own cluster, so its
+951 clusters are 700 of the 701 apps plus 251 of the 253 no-app episodes.
 
 Here is how to read these:
 - **Rico** labels fewer than one in five elements that need a label.

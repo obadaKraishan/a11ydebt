@@ -91,9 +91,10 @@ paper's 10 shards. Full tables: [results/v0.1/](https://github.com/obadaKraishan
 | interactive_image | 105,780 | 33.29 [31.97, 34.66] | 133,266 | 58.88 [53.50, 64.15] |
 
 Rico has 66,261 screens from 9,384 apps. The AndroidControl sample has 49,892 screens from 7,623
-episodes, with 951 app clusters (700 apps, plus 251 episodes with no identified app, each its own
-cluster). The point estimates equal the paper's exactly. The interactive_image row is not in the
-paper.
+episodes: 701 identified apps, and 253 episodes with no identified app. An app cluster counts
+only if it has at least one candidate, so needs_label has 8,904 app clusters on Rico and 951 on
+AndroidControl (700 apps, plus 251 no-app episodes, each its own cluster). The point estimates
+equal the paper's exactly. The interactive_image row is not in the paper.
 
 [^seeds]: Intervals use independent seeds. The paper's shared-stream intervals (Table I) are
     reproduced exactly by `scripts/compare_aissa.py bootstrap`; see

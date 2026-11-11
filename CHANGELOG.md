@@ -22,6 +22,11 @@ All notable changes to this project are recorded here. The format follows
 - Every README link is absolute (`https://github.com/obadaKraishan/a11ydebt/blob/main/...` for
   files, `.../tree/main/...` for folders), so the links work on PyPI's project page.
   `tests/test_docs.py` fails if the README gains a relative link.
+- The README and `docs/how-to-audit.md` say which app count they give: AndroidControl's 10
+  shards have 701 identified apps and 253 episodes with no identified app, and needs_label has
+  951 app clusters (700 apps and 251 episodes with a candidate). Rico has 9,384 apps and 8,904
+  needs_label app clusters. The how-to-audit column is now "App clusters (needs_label)".
+  `tests/test_docs.py` checks these counts against `results/v0.1/`.
 
 ## [0.1.0] - 2026-11-10
 The first release. It audits Rico and AndroidControl and reproduces the corpus coverage numbers
