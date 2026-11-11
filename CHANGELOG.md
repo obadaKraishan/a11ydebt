@@ -6,10 +6,20 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Removed
+- Removed internal development notes and the roadmap from the repository: `prompts/`,
+  `reports/`, `CLAUDE.md`, `docs/session-log.md` and `docs/roadmap.md` are no longer tracked
+  and are now gitignored, and the README no longer has an AI-use section or links to those
+  folders. The git history and the 0.1.0 and 0.1.1 archives still contain them.
+
 ### Changed
 - After the 0.1.1 release: `CITATION.cff` lists the 0.1.1 version DOI
   (10.5281/zenodo.24123117) next to the 0.1.0 one, and the README's DOI sentence gives both.
   The concept DOI, 10.5281/zenodo.24121869, is unchanged and now resolves to 0.1.1.
+- `CONTRIBUTING.md` states the AI-assistance rules for contributors on their own, the release
+  checklist lists plain maintainer steps, and the docs and code comments call the
+  `interactive_image` population by its name instead of an internal session number. No number
+  changes.
 
 ## [0.1.1] - 2026-11-10
 Documentation and CI fixes after the first release. No coverage number or interval changes.
