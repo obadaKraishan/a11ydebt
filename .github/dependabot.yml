@@ -1,0 +1,15 @@
+# Keeps the SHA-pinned actions in .github/workflows/ current: one grouped PR a month, which goes
+# through the usual PR checks before it is merged.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    # Wait a week after a release before proposing it (zizmor: dependabot-cooldown).
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"

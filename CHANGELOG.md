@@ -17,6 +17,11 @@ All notable changes to this project are recorded here. The format follows
   clusters column counts only the clusters with at least one candidate in that population (951
   needs_label clusters = 700 apps + 251 episodes). No number changes. `CorpusReport` gains
   `n_no_app`.
+- CI pins every action to a full commit SHA, with the exact version in a comment, as
+  `publish.yml` does: `actions/checkout` v7.0.1 (now with `persist-credentials: false`) and
+  `astral-sh/setup-uv` v10.3.3. A new `.github/dependabot.yml` proposes action updates once a
+  month, grouped, after a 7-day cooldown. zizmor 1.32.0 (auditor persona) and actionlint
+  1.7.12 report nothing.
 
 ### Fixed
 - Every README link is absolute (`https://github.com/obadaKraishan/a11ydebt/blob/main/...` for
