@@ -27,6 +27,8 @@ All notable changes to this project are recorded here. The format follows
   951 app clusters (700 apps and 251 episodes with a candidate). Rico has 9,384 apps and 8,904
   needs_label app clusters. The how-to-audit column is now "App clusters (needs_label)".
   `tests/test_docs.py` checks these counts against `results/v0.1/`.
+- `docs/how-to-audit.md` cites the software after the paper, with the concept DOI
+  10.5281/zenodo.24121869.
 
 ## [0.1.0] - 2026-11-10
 The first release. It audits Rico and AndroidControl and reproduces the corpus coverage numbers

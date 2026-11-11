@@ -109,3 +109,7 @@ exactly.*
 
 **Cite:** Kraishan, O., and Jitkajornwanich, K. (2026). *Trained on What Screen Readers Cannot
 Read: Accessibility Debt in the GUI Corpora Behind Computer-Use Agents.* IEEE AISSA 2026.
+
+**Cite the software too:** Kraishan, O. (2026). *a11ydebt: Audit Accessibility Debt in GUI-Agent
+Corpora* [Computer software]. Zenodo. <https://doi.org/10.5281/zenodo.24121869> (the concept DOI,
+which covers every version).
