@@ -1,6 +1,6 @@
 # How to audit your GUI corpus with a11ydebt
 
-*A two-page practical note. a11ydebt 0.1.0 · <https://github.com/obadaKraishan/a11ydebt>
+*A two-page practical note. a11ydebt 0.1.1 · <https://github.com/obadaKraishan/a11ydebt>
 (QR code: [assets/qr-a11ydebt.png](assets/qr-a11ydebt.png))*
 
 ## Why audit

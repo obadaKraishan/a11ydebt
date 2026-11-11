@@ -1,14 +1,14 @@
 {
   "upload_type": "software",
   "title": "a11ydebt: Audit Accessibility Debt in GUI-Agent Corpora",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "creators": [
     {
       "name": "Kraishan, Obada",
       "affiliation": "College of Media and Communication, Texas Tech University"
     }
   ],
-  "description": "<p>a11ydebt measures content-description coverage, the share of UI elements that need a screen-reader label and have one, in the GUI corpora behind computer-use agents. It reports coverage per screen, per app and per corpus, with app-cluster bootstrap intervals. Version 0.1.0 audits Rico and AndroidControl, and it reproduces the corpus coverage numbers and intervals of the IEEE AISSA 2026 paper <em>Trained on What Screen Readers Cannot Read: Accessibility Debt in the GUI Corpora Behind Computer-Use Agents</em> (Kraishan and Jitkajornwanich) exactly.</p><p>The archive contains code only. No Rico or AndroidControl data is redistributed.</p>",
+  "description": "<p>a11ydebt measures content-description coverage, the share of UI elements that need a screen-reader label and have one, in the GUI corpora behind computer-use agents. It reports coverage per screen, per app and per corpus, with app-cluster bootstrap intervals. Version 0.1.1 audits Rico and AndroidControl, and it reproduces the corpus coverage numbers and intervals of the IEEE AISSA 2026 paper <em>Trained on What Screen Readers Cannot Read: Accessibility Debt in the GUI Corpora Behind Computer-Use Agents</em> (Kraishan and Jitkajornwanich) exactly.</p><p>The archive contains code only. No Rico or AndroidControl data is redistributed.</p>",
   "license": "Apache-2.0",
   "access_right": "open",
   "keywords": [

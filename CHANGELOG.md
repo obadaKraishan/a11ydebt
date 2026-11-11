@@ -6,6 +6,14 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-10
+Documentation and CI fixes after the first release. No coverage number or interval changes.
+
+### Added
+- `CONTRIBUTING.md`: issues (never attach Rico data), the branch and pull-request
+  workflow on the protected `main`, tests and formatting, and the AI-assistance policy. The
+  README's Development section links to it.
+
 ### Changed
 - After the 0.1.0 release: the README has PyPI and Zenodo DOI badges, and its software BibTeX
   entry carries the concept DOI. `CITATION.cff` gains `doi` (the concept DOI,
@@ -22,11 +30,6 @@ All notable changes to this project are recorded here. The format follows
   `astral-sh/setup-uv` v10.3.3. A new `.github/dependabot.yml` proposes action updates once a
   month, grouped, after a 7-day cooldown. zizmor 1.32.0 (auditor persona) and actionlint
   1.7.12 report nothing.
-
-### Added
-- `CONTRIBUTING.md`: issues (never attach Rico data), the branch and pull-request
-  workflow on the protected `main`, tests and formatting, and the AI-assistance policy. The
-  README's Development section links to it.
 
 ### Fixed
 - Every README link is absolute (`https://github.com/obadaKraishan/a11ydebt/blob/main/...` for
@@ -135,5 +138,6 @@ and cluster-bootstrap intervals of the IEEE AISSA 2026 paper exactly.
 - `docs/release-checklist.md` uses the trusted-publishing workflow and attaches no files to the
   GitHub release.
 
-[Unreleased]: https://github.com/obadaKraishan/a11ydebt/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/obadaKraishan/a11ydebt/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/obadaKraishan/a11ydebt/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/obadaKraishan/a11ydebt/releases/tag/v0.1.0

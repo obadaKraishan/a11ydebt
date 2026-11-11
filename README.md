@@ -14,7 +14,7 @@ Readers Cannot Read: Accessibility Debt in the GUI Corpora Behind Computer-Use A
 (Kraishan and Jitkajornwanich). From the raw data, it reproduces the paper's corpus coverage
 numbers (overall and by role) and its cluster-bootstrap intervals exactly.
 
-> Version 0.1.0, released on 2026-11-10. It supports Rico and AndroidControl, and needs Python
+> Version 0.1.1, released on 2026-11-10. It supports Rico and AndroidControl, and needs Python
 > 3.10 or later.
 
 ## Install
@@ -80,7 +80,7 @@ class names, and only nodes that are visible to the user and have positive area 
 | `icon_like` (the paper's strictest measure) | A tappable image or button with no visible text. |
 | `interactive_image` (new in a11ydebt) | An image-based node (ImageView family, ImageButton, FAB) that is clickable or focusable. |
 
-## Results (v0.1.0)
+## Results (v0.1.1)
 Label coverage, with 95% app-cluster bootstrap intervals[^seeds]. AndroidControl is the
 paper's 10 shards. Full tables: [results/v0.1/](https://github.com/obadaKraishan/a11ydebt/tree/main/results/v0.1).
 
@@ -135,7 +135,7 @@ carries both entries.
 @software{kraishan2026a11ydebt,
   author  = {Kraishan, Obada},
   title   = {a11ydebt: Audit Accessibility Debt in GUI-Agent Corpora},
-  version = {0.1.0},
+  version = {0.1.1},
   year    = {2026},
   url     = {https://github.com/obadaKraishan/a11ydebt},
   doi     = {10.5281/zenodo.24121869}
