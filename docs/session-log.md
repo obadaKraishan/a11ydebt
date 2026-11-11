@@ -121,3 +121,25 @@ Five lines per session: did / decided / next / open questions / usage notes.
   - README links are relative, so they break on PyPI's project page.
 - **Usage notes:** no model calls and no Kaggle use. Seven CI runs (one cancelled when
   superseded) plus one publish run (3 min, including the wait for approval).
+
+## 2026-11-10 · v0.1.1 release (prompt P08, report R08, both in a11ydebt/)
+- **Did:**
+  - Protected `main` (reliacode's settings). All changes went through PRs #2 and #3, merged with
+    merge commits on green CI.
+  - Absolute README links, the app-count wording (report header, README, how-to-audit, all
+    tested), the software citation, CI pinned to SHAs with Dependabot, and CONTRIBUTING.md.
+  - Released 0.1.1: tag, GitHub release, PyPI (approved by Obada), Zenodo version DOI
+    10.5281/zenodo.24123117.
+  - Hub: the report-bundle rule, `_shared/make_bundle.py`, and STATUS.md's Upcoming section.
+- **Decided (Obada, R07):**
+  - D1: Obada deletes RELEASE_APPROVED after each release. D2: leave the Zenodo date.
+  - D3: absolute links in the README. D4: SHA pins and protected `main`.
+  - Also: the 701 vs 951 mismatch was wording, not a bug; no number changed.
+- **Next:** delete RELEASE_APPROVED. The AISSA slide (QR code, concept DOI). After AISSA: the
+  paper DOI, then v0.2 (issue #1).
+- **Open questions:**
+  - Delete the old `dist/`?
+  - "identified apps" in the `audit` CLI line?
+  - Redact `$HOME` in bundles?
+- **Usage notes:** no model calls and no Kaggle use. Six CI runs, one Dependabot run and one
+  publish run before the report PR; one Chrome tab for the PyPI page.
