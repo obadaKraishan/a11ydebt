@@ -36,6 +36,7 @@ prompts/
 reports/
 CLAUDE.md
 docs/session-log.md
+docs/roadmap.md
 
 # Session report bundles: local evidence for each report, never committed
 reports/bundles/
