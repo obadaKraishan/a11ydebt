@@ -11,6 +11,12 @@ All notable changes to this project are recorded here. The format follows
   entry carries the concept DOI. `CITATION.cff` gains `doi` (the concept DOI,
   10.5281/zenodo.24121869) and `identifiers` (the 0.1.0 version DOI, 10.5281/zenodo.24121870).
   The paper DOI follows once IEEE Xplore assigns it.
+- `a11ydebt report`: each corpus header gives identified apps and the app clusters with no
+  identified app separately, for example "701 identified apps and 253 episodes with no
+  identified app" on AndroidControl, instead of "701 apps". The method note adds that the App
+  clusters column counts only the clusters with at least one candidate in that population (951
+  needs_label clusters = 700 apps + 251 episodes). No number changes. `CorpusReport` gains
+  `n_no_app`.
 
 ### Fixed
 - Every README link is absolute (`https://github.com/obadaKraishan/a11ydebt/blob/main/...` for

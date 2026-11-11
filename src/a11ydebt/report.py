@@ -34,6 +34,7 @@ from a11ydebt.bootstrap import (
     LEVELS,
     ClusteredInterval,
     ScreenCount,
+    cluster_key,
     clustered_interval,
     wilson_ci,
 )
@@ -133,7 +134,8 @@ class CorpusReport(BaseModel):
     dataset: str
     source: str
     n_screens: int
-    n_apps: int
+    n_apps: int  # identified apps; screens with app "" are not an app
+    n_no_app: int = 0  # app clusters with no identified app: episodes (AndroidControl), screens
     n_nodes: int
     n_included: int
     n_resamples: int
@@ -155,6 +157,17 @@ SEED_FOOTNOTE = (
 
 def _none_if_nan(value: float) -> float | None:
     return None if value != value else value
+
+
+def no_app_unit(dataset: str) -> str:
+    """What a no-app app cluster is (``bootstrap.cluster_key``): an episode or a screen."""
+    return "episode" if dataset == "androidcontrol" else "screen"
+
+
+def _no_app_clusters(audit: Audit) -> int:
+    """App clusters with no identified app, over all screens (with or without candidates)."""
+    rows = next(iter(audit.screens.values()), [])
+    return len({cluster_key("app", audit.dataset, r.screen_id, r.app) for r in rows if not r.app})
 
 
 def build_report(
@@ -222,6 +235,7 @@ def build_report(
         source=str(audit.summary.get("source") or audit.path),
         n_screens=corpus["n_screens"],
         n_apps=corpus["n_apps"],
+        n_no_app=_no_app_clusters(audit),
         n_nodes=corpus["n_nodes"],
         n_included=corpus["n_included"],
         n_resamples=n_resamples,
@@ -245,6 +259,11 @@ def _share(part: int, whole: int) -> float | None:
     return part / whole if whole else None
 
 
+def _count(n: int, noun: str) -> str:
+    """``1 identified app``, ``701 identified apps``, ``0 screens``."""
+    return f"{n:,} {noun}{'' if n == 1 else 's'}"
+
+
 def format_markdown(reports: list[CorpusReport], *, generated_at: str = "") -> str:
     """``report.md``: a header that states the method, then three tables per corpus."""
     first = reports[0]
@@ -258,15 +277,19 @@ def format_markdown(reports: list[CorpusReport], *, generated_at: str = "") -> s
         f"intervals of {first.n_resamples:,} cluster-bootstrap resamples (seed {first.seed}). "
         "Each interval has its own generator seeded with the seed.[^seeds] App clusters are "
         "apps; on AndroidControl, an episode with no identified app is its own cluster. Screen "
-        "clusters are screens. Only clusters with at least one candidate are resampled.",
+        "clusters are screens. Only clusters with at least one candidate are resampled, so the "
+        "App clusters column, which counts them per population, can be smaller than the "
+        "identified apps plus the episodes with no identified app.",
     ]
     for r in reports:
+        no_app = _count(r.n_no_app, no_app_unit(r.dataset))
         lines += [
             "",
             f"## {r.label}",
             "",
-            f"Dataset `{r.dataset}` from `{r.source}`: {r.n_screens:,} screens, {r.n_apps:,} "
-            f"apps, {r.n_nodes:,} nodes ({r.n_included:,} included: visible, positive area).",
+            f"Dataset `{r.dataset}` from `{r.source}`: {r.n_screens:,} screens, {r.n_nodes:,} "
+            f"nodes ({r.n_included:,} included: visible, positive area), "
+            f"{_count(r.n_apps, 'identified app')} and {no_app} with no identified app.",
             "",
             f"**Coverage with {level} cluster-bootstrap intervals**",
             "",

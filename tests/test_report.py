@@ -80,6 +80,36 @@ def test_report_tables_for_androidcontrol(ac_audit):
     assert [(r.role, r.candidates, r.labelled) for r in report.roles] == [("image", 12, 7)]
 
 
+def test_header_states_identified_apps_and_no_app_episodes_separately(ac_audit):
+    # P08: the header said "1 apps"-style totals, which read as if they included the no-app
+    # clusters. It now gives identified apps and no-app episodes separately; the App clusters
+    # column (3 = com.a, episode:2, episode:3) stays as it was.
+    report = build_report(load_audit(ac_audit, "AC synthetic"), n_resamples=100)
+    assert (report.n_apps, report.n_no_app) == (1, 2)
+    md = format_markdown([report])
+    assert (
+        "6 screens, 60 nodes (48 included: visible, positive area), 1 identified app and "
+        "2 episodes with no identified app." in md
+    )
+    assert "can be smaller than the identified apps plus the episodes with no identified" in md
+    assert "| needs_label | 12 | 7 | 58.33 |" in md and "| 3 |" in md
+
+
+def test_header_counts_screens_with_no_app_outside_androidcontrol(tmp_path):
+    # Every screen has an app (as in Rico), then one screen without: its own cluster.
+    screens = [screen("10", "com.a", (1, 2)), screen("11", "com.b", (0, 1))]
+    out = tmp_path / "rico_like"
+    write_outputs(coverage(screens, dataset="rico"), out, source="synthetic")
+    md = format_markdown([build_report(load_audit(out), n_resamples=50)])
+    assert "2 identified apps and 0 screens with no identified app." in md
+
+    screens.append(screen("12", "", (1, 1)))
+    write_outputs(coverage(screens, dataset="rico"), out, source="synthetic")
+    report = build_report(load_audit(out), n_resamples=50)
+    assert (report.n_apps, report.n_no_app) == (2, 1)
+    assert "2 identified apps and 1 screen with no identified app." in format_markdown([report])
+
+
 def test_intervals_do_not_depend_on_the_other_corpora(ac_audit):
     alone = build_report(load_audit(ac_audit), n_resamples=300)
     again = build_report(load_audit(ac_audit), n_resamples=300)
