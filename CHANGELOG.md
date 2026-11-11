@@ -12,6 +12,11 @@ All notable changes to this project are recorded here. The format follows
   10.5281/zenodo.24121869) and `identifiers` (the 0.1.0 version DOI, 10.5281/zenodo.24121870).
   The paper DOI follows once IEEE Xplore assigns it.
 
+### Fixed
+- Every README link is absolute (`https://github.com/obadaKraishan/a11ydebt/blob/main/...` for
+  files, `.../tree/main/...` for folders), so the links work on PyPI's project page.
+  `tests/test_docs.py` fails if the README gains a relative link.
+
 ## [0.1.0] - 2026-11-10
 The first release. It audits Rico and AndroidControl and reproduces the corpus coverage numbers
 and cluster-bootstrap intervals of the IEEE AISSA 2026 paper exactly.
