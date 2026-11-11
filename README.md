@@ -161,6 +161,3 @@ The code is Apache-2.0 ([LICENSE](https://github.com/obadaKraishan/a11ydebt/blob
 cluster bootstrap are ported from the MIT-licensed AISSA pipeline (accessibility-debt-agents).
 [NOTICE](https://github.com/obadaKraishan/a11ydebt/blob/main/NOTICE) lists every ported file and keeps the MIT notice. The datasets have their own
 terms ([docs/licenses.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/licenses.md)).
-
-The [prompts/](https://github.com/obadaKraishan/a11ydebt/tree/main/prompts) and [reports/](https://github.com/obadaKraishan/a11ydebt/tree/main/reports) folders hold the session-by-session record of
-the AI-assisted development.
