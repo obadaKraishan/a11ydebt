@@ -36,8 +36,7 @@ uv run ruff check . && uv run ruff format --check .
   numpy.
 
 ## AI assistance
-a11ydebt is developed with Claude Code, an AI coding assistant (see the README's AI-use
-disclosure). AI-assisted contributions are welcome on the same terms:
+AI-assisted contributions are welcome on these terms:
 - **Disclose it.** Keep the assistant's `Co-Authored-By:` trailer on the commits, or say in the
   pull request which parts were AI-assisted.
 - **Own it.** You have read and understood every line you submit, and you are responsible for
