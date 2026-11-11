@@ -74,7 +74,7 @@ is seeded, so a rerun gives identical numbers.
   [reproduction-androidcontrol.md](reproduction-androidcontrol.md),
   [reproduction-bootstrap.md](reproduction-bootstrap.md)).
 - **No LLM in the data path:** no language model labelled, generated or edited any data item, so
-  the LLM model and licence fields of the portfolio's provenance scheme do not apply. (The v1.1
+  no item records an LLM model or licence. (The v1.1
   decorative-icon experiment would add LLM-judged items, with model and licence recorded per row.)
 - **Versions:** the tables in `results/v0.1/` came from a11ydebt 0.1.0, Kaggle runs 1 and 2
   (bundled from commit `3896724`), seed 20260908 and 5,000 resamples. a11ydebt 0.1.1

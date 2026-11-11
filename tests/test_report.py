@@ -81,7 +81,7 @@ def test_report_tables_for_androidcontrol(ac_audit):
 
 
 def test_header_states_identified_apps_and_no_app_episodes_separately(ac_audit):
-    # P08: the header said "1 apps"-style totals, which read as if they included the no-app
+    # In 0.1.0 the header said "1 apps"-style totals, which read as if they included the no-app
     # clusters. It now gives identified apps and no-app episodes separately; the App clusters
     # column (3 = com.a, episode:2, episode:3) stays as it was.
     report = build_report(load_audit(ac_audit, "AC synthetic"), n_resamples=100)

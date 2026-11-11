@@ -16,8 +16,8 @@ Roles come from the class name alone. AndroidControl trees have no superclass ch
 Rico's ``ancestors`` would make the cross-corpus comparison unfair. ``classify_role(name,
 ancestors)`` exists only for the Rico robustness variant.
 
-The P01 rule (``is_interactive_image``) is an addition and has no counterpart in the paper. It
-flags an image-based node that is clickable or focusable.
+The ``interactive_image`` rule (``is_interactive_image``) is an a11ydebt addition and has no
+counterpart in the paper. It flags an image-based node that is clickable or focusable.
 """
 
 from __future__ import annotations
@@ -262,7 +262,7 @@ def is_icon_like(role: str, text: object, clickable: bool, long_clickable: bool 
     return is_interactive(clickable, long_clickable, role)
 
 
-# ------------------------------------------------------------------ P01 rule (a11ydebt addition)
+# ---------------------------------------------------- interactive_image rule (a11ydebt addition)
 
 _IMAGE_BUTTON_SUFFIXES = ("imagebutton", "floatingactionbutton")
 
@@ -278,7 +278,7 @@ def is_image_based(class_name: str | None) -> bool:
 
 
 def is_interactive_image(class_name: str | None, clickable: bool, focusable: bool) -> bool:
-    """P01: an image-based node that is clickable or focusable (long-click alone does not count)."""
+    """An image-based node that is clickable or focusable (long-click alone does not count)."""
     return is_image_based(class_name) and (bool(clickable) or bool(focusable))
 
 

@@ -146,7 +146,7 @@ class CorpusReport(BaseModel):
     debt: list[DebtRow]
 
 
-#: Decision D1 (P05): the report's intervals and the paper's are both exact, from different seeds.
+#: The report's intervals and the paper's are both exact, from different seeds.
 SEED_FOOTNOTE = (
     "[^seeds]: Intervals use independent seeds. The AISSA 2026 paper's shared-stream intervals "
     "(Table I) are reproduced exactly by `scripts/compare_aissa.py bootstrap`; see "

@@ -208,7 +208,7 @@ def main_rico(argv: list[str] | None = None) -> int:
     ii = pops["interactive_image"]
     lines += [
         "",
-        "**New in a11ydebt (no AISSA counterpart): P01 interactive_image population**",
+        "**New in a11ydebt (no AISSA counterpart): interactive_image population**",
         "",
         f"- Candidates {ii['candidates']:,}, labelled {ii['labelled']:,}, "
         f"coverage {pct(ii['labelled'], ii['candidates'])}%, "
@@ -430,7 +430,7 @@ def main_androidcontrol(argv: list[str]) -> int:
     )
     lines += [
         "",
-        "**New in a11ydebt (no AISSA counterpart): P01 interactive_image population**",
+        "**New in a11ydebt (no AISSA counterpart): interactive_image population**",
         "",
         f"- Candidates {ii:,}, labelled {iil:,}, coverage {pct(iil, ii)}%, "
         "screens with at least one "

@@ -82,7 +82,7 @@ needs-label elements. Per-episode apps also equal AISSA's `androidcontrol_episod
 |---|---:|---:|---:|---:|
 | needs_label | 1,462,544 | 837,536 | 57.27% | 49,692 of 49,892 |
 | icon_like | 194,529 | 122,074 | 62.75% | 20,779 of 49,892 |
-| interactive_image (P01, new) | 133,266 | 78,469 | 58.88% | 15,569 of 49,892 |
+| interactive_image (new) | 133,266 | 78,469 | 58.88% | 15,569 of 49,892 |
 
 ## All 20 shards (run 1 + run 2): no AISSA counterpart
 AISSA parsed only shards 00000 to 00009, so **nothing in this section can be checked against the

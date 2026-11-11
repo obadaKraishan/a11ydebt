@@ -1,7 +1,7 @@
 # Licences: code, data and models
 
-Adapted from `docs/DATA_LICENSES.md` in the AISSA pipeline (accessibility-debt-agents). Where the
-roadmap and that file disagree, this project follows the stricter reading.
+Adapted from `docs/DATA_LICENSES.md` in the AISSA pipeline (accessibility-debt-agents). Where that
+file and other sources disagree, this project follows the stricter reading.
 
 ## Code
 a11ydebt is Apache-2.0 (`LICENSE`). `src/a11ydebt/taxonomy.py` is ported from the MIT-licensed
