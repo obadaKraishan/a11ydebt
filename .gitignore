@@ -31,5 +31,11 @@ htmlcov/
 .idea/
 .vscode/
 
+# Development notes are kept outside this repository
+prompts/
+reports/
+CLAUDE.md
+docs/session-log.md
+
 # Session report bundles: local evidence for each report, never committed
 reports/bundles/
