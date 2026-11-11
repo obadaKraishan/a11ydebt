@@ -9,8 +9,8 @@ protected `main` (tag `v0.1.1`; <https://pypi.org/project/a11ydebt/0.1.1/>; vers
 10.5281/zenodo.24123117). The build went to a fresh folder instead of `rm -rf dist`.
 
 Every step from step 1 on needs `RELEASE_APPROVED` in the repo root. Only Obada creates that
-file, and the release-gate hook blocks publishing commands without it. The commands below use the
-documented flags of `gh` and `uv`; confirm each one with `--help` at release time.
+file, and nothing is published without it. The commands below use the documented flags of `gh`
+and `uv`; confirm each one with `--help` at release time.
 
 ## 0. Pre-flight (safe to run any time; publishes nothing)
 - [ ] CI is green on `main` for Python 3.10 to 3.13: `gh run list --limit 1`.
@@ -31,10 +31,15 @@ documented flags of `gh` and `uv`; confirm each one with `--help` at release tim
       ```
 - [ ] The versions agree: `__version__`, `CITATION.cff` and `.zenodo.json` all say 0.1.0
       (`tests/test_release_metadata.py` checks this).
-- [x] **Decide what becomes public.** Decided on 2026-11-10 (P07, D1): the history is kept as
-      it is, the most transparent record of AI-assisted work. `CLAUDE.md` and `docs/roadmap.md`
-      were made public-safe in the current tree, and a full-history scan found no secrets (see
-      report R07).
+- [x] **Decide what is public.** Current decision (2026-11-11): the repository holds the
+      software and its user docs only. Development notes (session prompts and reports, the
+      assistant instructions, the session log and the roadmap) are kept outside the repository
+      and gitignored. The git history, the Zenodo archives of v0.1.0 and v0.1.1 and the PyPI
+      page of 0.1.1 still contain the earlier versions of those files; that is accepted, since
+      a full-history scan before the repository went public (2026-11-10) found no secrets.
+      Before each release, check that no such file has come back:
+      `git ls-files | grep -E '^(prompts|reports)/|CLAUDE\.md|session-log|roadmap'` prints
+      nothing.
 - [ ] The README renders on PyPI: `uvx twine check --strict dist/*`.
 - [ ] **Placeholders.** This must list only what is still unknown:
       ```bash
@@ -139,6 +144,7 @@ hf upload obadakr/a11ydebt space/ . --repo-type space
 
 ## 10. After the release
 - Check the QR code on a phone, signed out.
-- Update the project status, `docs/session-log.md` and the AISSA slide (DOI and QR code).
+- Check that the GitHub release, the PyPI page and the Zenodo record show the same version,
+  and record the new version DOI at the top of this checklist.
 - Suggested: Obada deletes `RELEASE_APPROVED` afterwards, so the next publish needs a fresh
   approval.
