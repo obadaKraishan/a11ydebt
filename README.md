@@ -162,12 +162,5 @@ cluster bootstrap are ported from the MIT-licensed AISSA pipeline (accessibility
 [NOTICE](https://github.com/obadaKraishan/a11ydebt/blob/main/NOTICE) lists every ported file and keeps the MIT notice. The datasets have their own
 terms ([docs/licenses.md](https://github.com/obadaKraishan/a11ydebt/blob/main/docs/licenses.md)).
 
-## AI-use disclosure
-a11ydebt is developed with [Claude Code](https://claude.com/claude-code), an AI coding assistant.
-The author directs the work, reviews the changes, and is responsible for the code and its
-correctness. Commits made with Claude Code carry a `Co-Authored-By: Claude` trailer, so the
-history shows which changes were AI-assisted. No language model produces any number in the
-audit: the counts come from deterministic parsing, and the intervals from a seeded bootstrap.
-
 The [prompts/](https://github.com/obadaKraishan/a11ydebt/tree/main/prompts) and [reports/](https://github.com/obadaKraishan/a11ydebt/tree/main/reports) folders hold the session-by-session record of
 the AI-assisted development.
