@@ -4,6 +4,10 @@
 <https://pypi.org/project/a11ydebt/0.1.0/>; Zenodo concept DOI 10.5281/zenodo.24121869, version
 DOI 10.5281/zenodo.24121870). Reuse the list for later versions, replacing the version number.
 
+**v0.1.1 followed the same steps on 2026-11-10 (UTC: 2026-11-11)**, through pull requests on the
+protected `main` (tag `v0.1.1`; <https://pypi.org/project/a11ydebt/0.1.1/>; version DOI
+10.5281/zenodo.24123117). The build went to a fresh folder instead of `rm -rf dist`.
+
 Every step from step 1 on needs `RELEASE_APPROVED` in the repo root. Only Obada creates that
 file, and the release-gate hook blocks publishing commands without it. The commands below use the
 documented flags of `gh` and `uv`; confirm each one with `--help` at release time.
