@@ -142,7 +142,8 @@ carries both entries.
 }
 ```
 The software DOI [10.5281/zenodo.24121869](https://doi.org/10.5281/zenodo.24121869) covers every
-version. Version 0.1.0 alone is
+version. Version 0.1.1 alone is
+[10.5281/zenodo.24123117](https://doi.org/10.5281/zenodo.24123117), and version 0.1.0 is
 [10.5281/zenodo.24121870](https://doi.org/10.5281/zenodo.24121870).
 
 ## Development

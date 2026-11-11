@@ -6,6 +6,11 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+- After the 0.1.1 release: `CITATION.cff` lists the 0.1.1 version DOI
+  (10.5281/zenodo.24123117) next to the 0.1.0 one, and the README's DOI sentence gives both.
+  The concept DOI, 10.5281/zenodo.24121869, is unchanged and now resolves to 0.1.1.
+
 ## [0.1.1] - 2026-11-10
 Documentation and CI fixes after the first release. No coverage number or interval changes.
 
