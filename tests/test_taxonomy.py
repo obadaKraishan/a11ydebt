@@ -104,7 +104,7 @@ def test_image_based(class_name, image_based):
     assert tx.is_image_based(class_name) is image_based
 
 
-def test_interactive_image_is_the_p01_rule():
+def test_interactive_image_rule():
     assert tx.is_interactive_image("android.widget.ImageView", clickable=True, focusable=False)
     assert tx.is_interactive_image("android.widget.ImageView", clickable=False, focusable=True)
     assert not tx.is_interactive_image("android.widget.ImageView", clickable=False, focusable=False)

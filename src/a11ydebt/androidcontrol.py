@@ -11,7 +11,7 @@ keeps the rules that decide the counts unchanged:
   sets ``ShardReader.truncated``.
 * The codebook is ``a11ydebt.taxonomy``, applied exactly as for Rico. Roles come from the class name
   only, ``labelled`` means a non-empty content description, and ``included`` means visible to the
-  user with positive area. The P01 ``interactive_image`` flag uses ``is_focusable``.
+  user with positive area. The ``interactive_image`` flag uses ``is_focusable``.
 * An episode's app is the most frequent package among its nodes' resource ids
   (``<package>:id/<name>``), ignoring platform packages, with ties broken alphabetically. An
   episode with no usable resource id gets app "".

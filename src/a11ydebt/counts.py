@@ -16,7 +16,7 @@ __all__ = ["LABEL_ROLES", "POPULATIONS", "NodeLike", "ScreenCounts", "ScreenLike
 #: The populations a11ydebt counts. All of them require ``included`` (visible, positive area).
 #:   needs_label        the paper's primary denominator (AISSA "label coverage")
 #:   icon_like          the paper's strictest denominator (a tappable graphic with no text)
-#:   interactive_image  the P01 rule: an image-based node that is clickable or focusable
+#:   interactive_image  an a11ydebt addition: an image-based node that is clickable or focusable
 POPULATIONS: tuple[str, ...] = ("needs_label", "icon_like", "interactive_image")
 
 #: Roles that can need a label (containers and web views are exempt), in report order.
