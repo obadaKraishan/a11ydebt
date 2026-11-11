@@ -51,7 +51,7 @@ uv run --with pyarrow python scripts/compare_aissa.py data/interim/audit_rico_s1
 - **Apps:** AISSA screens summed by app match a11ydebt on all seven counts for
   **9,384 of 9,384** apps.
 
-## New in a11ydebt: the P01 `interactive_image` population
+## New in a11ydebt: the `interactive_image` population
 This is an image-based node (ImageView family, ImageButton, FAB) that is clickable or
 focusable. It has no AISSA counterpart.
 
