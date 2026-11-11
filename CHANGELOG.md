@@ -23,6 +23,11 @@ All notable changes to this project are recorded here. The format follows
   month, grouped, after a 7-day cooldown. zizmor 1.32.0 (auditor persona) and actionlint
   1.7.12 report nothing.
 
+### Added
+- `CONTRIBUTING.md`: issues (never attach Rico data), the branch and pull-request
+  workflow on the protected `main`, tests and formatting, and the AI-assistance policy. The
+  README's Development section links to it.
+
 ### Fixed
 - Every README link is absolute (`https://github.com/obadaKraishan/a11ydebt/blob/main/...` for
   files, `.../tree/main/...` for folders), so the links work on PyPI's project page.

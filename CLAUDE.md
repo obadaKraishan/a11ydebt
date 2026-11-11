@@ -27,6 +27,10 @@ AISSA (Dec 8 to 10, 2026); see `docs/roadmap.md`.
   `docs/licenses.md` says otherwise.
 - **Small, real, incremental commits** with clear messages, pushed as they are made. No code
   dumps, no backdating, no squashing, no force pushes.
+- **`main` is protected** (since 2026-11-10). CI must pass on Python 3.10, 3.11, 3.12 and 3.13,
+  admins included; force pushes and deletion are blocked. Every change goes on a branch and
+  through a pull request, merged with a merge commit (`gh pr merge --merge`) once CI is green.
+  Never push to `main` directly. See `CONTRIBUTING.md`.
 - **AI use is disclosed.** Commits made with an AI assistant keep their `Co-Authored-By:`
   trailer, and the README's AI-use disclosure must stay accurate.
 - **Never publish** (PyPI, Zenodo, Kaggle, Hugging Face, git tags, GitHub releases) without the

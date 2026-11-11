@@ -151,7 +151,9 @@ uv sync                                          # Python 3.10+, with ruff, pyte
 uv run pytest                                    # synthetic fixtures only, no data needed
 uv run ruff check . && uv run ruff format --check .
 ```
-CI runs the same checks on Python 3.10 to 3.13.
+CI runs the same checks on Python 3.10 to 3.13. `main` is protected: every change goes through a
+pull request, merged once CI is green. See
+[CONTRIBUTING.md](https://github.com/obadaKraishan/a11ydebt/blob/main/CONTRIBUTING.md).
 
 ## License and provenance
 The code is Apache-2.0 ([LICENSE](https://github.com/obadaKraishan/a11ydebt/blob/main/LICENSE)). The codebook, the AndroidControl reader and the
