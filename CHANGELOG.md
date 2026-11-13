@@ -6,6 +6,16 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+- `space/`: a Gradio app for Hugging Face Spaces, outside the package. "Explore the debt" shows
+  the corpus numbers, the spread of per-screen coverage, coverage by role and the screens with
+  the most unlabelled elements (ids only). "Audit your own screen" applies the codebook to one
+  uploaded Rico view-hierarchy JSON or Android `uiautomator dump` XML, read in memory and not
+  kept. `space/build_stats.py` builds the per-screen statistics it reads (ids and counts only,
+  with a guard against any text column), and `space/dataset_card.md` documents them. The app
+  depends on the released a11ydebt 0.1.1 and Gradio 6.31.0; the package itself is unchanged.
+  Its tests run in CI (`pythonpath = ["space"]` for pytest) and skip where `space/` is absent.
+
 ### Removed
 - Removed internal development notes and the roadmap from the repository: `prompts/`,
   `reports/`, `CLAUDE.md`, `docs/session-log.md` and `docs/roadmap.md` are no longer tracked

@@ -26,13 +26,21 @@ Rico, AndroidControl (10 shards) and AndroidControl (all 20 shards).
 | Kaggle `screens/*.parquet` | AndroidControl screen | Yes: ids, split, app and counts. |
 | Kaggle `nodes/*.parquet` | candidate node | Yes: ids, class name, role, resource id, content description, text, hint text and the codebook flags. |
 
+**Per-screen statistics for the Hugging Face Space: `space/build_stats.py`.** One row per screen:
+the dataset, the screen id (and, for AndroidControl, the episode, step and shard), `n_nodes`,
+`n_included`, and the candidates, labelled and unlabelled counts and coverage for `needs_label`
+and `icon_like`. It leaves out the app package, the split and every text field, reads only the id
+and count columns of its inputs, refuses the Kaggle node tables, and fails if a string column
+holds anything but a dataset name or an id. Its output (`space/data/`) is not committed; it is
+meant for a Hugging Face dataset described by `space/dataset_card.md`, under CC BY 4.0.
+
 No table contains screenshots or rendered pixels. Only the Kaggle node table contains UI text.
 
 ## Sources and licences
 | Corpus | Source | Licence | What a11ydebt may publish |
 |---|---|---|---|
 | **Rico** (Deka et al., UIST 2017) | <https://interactionmining.org/rico>: `unique_uis.tar.gz` (66,261 view hierarchies) and `ui_details.csv` | University of Illinois research-use terms; Hugging Face mirrors list it as "unknown". It is not an open licence. | **Derived statistics and identifiers only:** aggregate tables, screen and app ids, and file checksums. |
-| **AndroidControl** (Li et al., NeurIPS 2024 D&B) | `https://storage.googleapis.com/gresearch/android_control/`: 20 GZIP TFRecord shards, about 50 GB | Apache-2.0, Copyright 2024 The Google Research Authors | Redistribution is allowed with attribution and the licence. v0.1 still publishes aggregates only. |
+| **AndroidControl** (Li et al., NeurIPS 2024 D&B) | `https://storage.googleapis.com/gresearch/android_control/`: 20 GZIP TFRecord shards, about 50 GB | Apache-2.0, Copyright 2024 The Google Research Authors | Redistribution is allowed with attribution and the licence. a11ydebt still publishes only aggregates and per-screen counts. |
 | RICO-Semantics | Not used in v0.1 | CC BY-SA 4.0 | |
 
 Full terms and citations: [docs/licenses.md](licenses.md).

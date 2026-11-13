@@ -1,0 +1,4 @@
+# Gradio itself is installed by Hugging Face from `sdk_version` in README.md (6.31.0).
+# To run the app elsewhere: pip install gradio==6.31.0 -r requirements.txt
+a11ydebt==0.1.1
+pyarrow==26.0.1

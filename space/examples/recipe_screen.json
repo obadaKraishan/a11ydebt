@@ -1,0 +1,114 @@
+{
+  "activity_name": "com.example.recipes/com.example.recipes.RecipeActivity",
+  "activity": {
+    "root": {
+      "class": "android.widget.FrameLayout", "bounds": [0, 0, 1080, 2340],
+      "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+      "visible-to-user": true, "content-desc": [null],
+      "children": [
+        {
+          "class": "android.widget.LinearLayout", "bounds": [0, 0, 1080, 2340],
+          "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+          "visible-to-user": true, "content-desc": [null],
+          "children": [
+            {
+              "class": "android.widget.Toolbar", "resource-id": "com.example.recipes:id/toolbar",
+              "bounds": [0, 63, 1080, 210],
+              "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null],
+              "children": [
+                {
+                  "class": "android.widget.ImageButton", "resource-id": "com.example.recipes:id/nav_back",
+                  "bounds": [0, 63, 147, 210],
+                  "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": [null]
+                },
+                {
+                  "class": "android.widget.TextView", "resource-id": "com.example.recipes:id/title",
+                  "bounds": [189, 98, 700, 175], "text": "Lentil soup",
+                  "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": [null]
+                },
+                {
+                  "class": "android.widget.ImageButton", "resource-id": "com.example.recipes:id/search",
+                  "bounds": [786, 63, 933, 210],
+                  "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": ["Search"]
+                },
+                {
+                  "class": "androidx.appcompat.widget.AppCompatImageView", "resource-id": "com.example.recipes:id/more",
+                  "bounds": [933, 63, 1080, 210],
+                  "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": [null]
+                }
+              ]
+            },
+            {
+              "class": "android.widget.ImageView", "resource-id": "com.example.recipes:id/hero_photo",
+              "bounds": [0, 210, 1080, 818],
+              "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            },
+            {
+              "class": "android.widget.TextView", "resource-id": "com.example.recipes:id/meta",
+              "bounds": [42, 860, 1038, 920], "text": "Serves 4, ready in 35 minutes",
+              "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            },
+            {
+              "class": "android.widget.LinearLayout", "resource-id": "com.example.recipes:id/actions",
+              "bounds": [0, 962, 1080, 1109],
+              "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null],
+              "children": [
+                {
+                  "class": "android.widget.ImageButton", "resource-id": "com.example.recipes:id/favourite",
+                  "bounds": [42, 962, 189, 1109],
+                  "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": ["Save to favourites"]
+                },
+                {
+                  "class": "android.widget.ImageButton", "resource-id": "com.example.recipes:id/share",
+                  "bounds": [210, 962, 357, 1109],
+                  "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": [null]
+                },
+                {
+                  "class": "android.widget.Button", "resource-id": "com.example.recipes:id/start",
+                  "bounds": [420, 983, 1038, 1088], "text": "Start cooking",
+                  "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+                  "visible-to-user": true, "content-desc": [null]
+                }
+              ]
+            },
+            {
+              "class": "android.widget.CheckBox", "resource-id": "com.example.recipes:id/done",
+              "bounds": [42, 1172, 168, 1298],
+              "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            },
+            {
+              "class": "android.widget.TextView", "resource-id": "com.example.recipes:id/done_label",
+              "bounds": [189, 1193, 1038, 1277], "text": "I have all the ingredients",
+              "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            },
+            {
+              "class": "android.widget.ImageView", "resource-id": "com.example.recipes:id/divider",
+              "bounds": [42, 1340, 1038, 1340],
+              "clickable": false, "focusable": false, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            },
+            {
+              "class": "com.google.android.material.floatingactionbutton.FloatingActionButton",
+              "resource-id": "com.example.recipes:id/add_to_list",
+              "bounds": [882, 2100, 1038, 2256],
+              "clickable": true, "focusable": true, "long-clickable": false, "enabled": true,
+              "visible-to-user": true, "content-desc": [null]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
