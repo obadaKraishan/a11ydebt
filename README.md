@@ -17,6 +17,10 @@ numbers (overall and by role) and its cluster-bootstrap intervals exactly.
 > Version 0.1.1, released on 2026-11-10. It supports Rico and AndroidControl, and needs Python
 > 3.10 or later.
 
+**Live demo:** explore the numbers, or audit one screen of your own, at
+<https://huggingface.co/spaces/obadakr/a11ydebt>. The per-screen counts behind it are the
+dataset [obadakr/a11ydebt-stats](https://huggingface.co/datasets/obadakr/a11ydebt-stats).
+
 ## Install
 From PyPI:
 ```bash
